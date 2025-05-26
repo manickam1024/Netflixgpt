@@ -1,42 +1,36 @@
-import { useEffect, useState } from 'react'
+import useTrailer from '../../hooks/useTrailer'
 import { useSelector } from 'react-redux'
-import { options } from '../../utils/constants'
+import Videobackground from './videobackground'
 
 const Maincontainer = () => {
+  const key = useTrailer()
   const select = useSelector((store) => store?.movieslice?.items)
+  const maincontainer = select?.[0]?.movies?.[0]
+  if (!maincontainer) return null
 
-  const [key, setkey] = useState([])
+  const { overview, original_title } = maincontainer
 
-  if (!select) {
-    return
-  }
-  const maincontainer = select[0]?.movies[0]
-  const id = maincontainer?.id
-
-  useEffect(() => {
-    async function dataforvideo(params) {
-      const data = await fetch(
-        `https://api.themoviedb.org/3/movie/${950387}/videos?language=en-US`,
-        options
-      )
-      const json = await data.json()
-      const filterdata = json.results.filter((f) => f.name == 'trailer')
-      const trailer = !filterdata.length ? json.results[0] : filterdata[0]
-      setkey(trailer.key)
-    }
-    dataforvideo()
-  }, [])
   return (
     <div className="relative overflow-x-hidden">
-      <iframe
-        className="z-0 w-full h-screen scale-125 "
-        src={`https://www.youtube.com/embed/${key}?autoplay=1&mute=1`}
-        title="YouTube video player"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-      ></iframe>
-      <div className="absolute top-0 w-full h-full  bg-gradient-to-t from-slate-950"></div>
+      <Videobackground tkey={key} />
+      <div className="absolute z-10  bottom-0 my-44 text-sm font-bold w-1/3 pl-20 text-white opacity-80 font-light">
+        {overview}
+      </div>
+      <div className="absolute z-10 bottom-0 my-72 pl-20 text-2xl font-bold  text-white ">
+        {original_title}
+      </div>
+      <div className="absolute z-10 bottom-0 my-24 pl-20">
+        {' '}
+        <button className="bg-white w-28 h-12 mr-8 rounded-lg bg-transparent opacity-90">
+          Watch now
+        </button>{' '}
+        <button className="bg-white  w-28 h-12 rounded-lg opacity-90 ">
+          more info
+        </button>
+      </div>
+      <div className="absolute top-0 w-full h-full  bg-gradient-to-r from-slate-950 "></div>
+      <div className="absolute bottom-0 w-full h-24  bg-gradient-to-t from-slate-950 "></div>
+
       <div className="absolute w-full h-full bg-black"></div>
     </div>
   )
