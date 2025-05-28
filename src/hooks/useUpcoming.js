@@ -4,21 +4,21 @@ import { useEffect } from 'react'
 import { options } from '../utils/constants'
 
 // this is used in browse
-function useNowMovieplaying() {
+function useUpcoming() {
   const dispatch = useDispatch()
 
   const url =
-    'https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1'
+    'https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1'
   useEffect(() => {
     async function tmdb() {
       try {
         const raw = await fetch(url, options)
-        if (!raw) return
 
+        if (!raw) return
         const data = await raw.json()
         if (!data) return
 
-        dispatch(addmovie({ movies: data.results }))
+        dispatch(addmovie({ upcoming: data.results }))
       } catch (error) {
         console.error('Error fetching data:', error)
       }
@@ -27,4 +27,4 @@ function useNowMovieplaying() {
   }, [])
 }
 
-export default useNowMovieplaying
+export default useUpcoming

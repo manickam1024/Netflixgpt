@@ -1,30 +1,30 @@
 import { addmovie } from '../utils/movieslice'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { options } from '../utils/constants'
 
 // this is used in browse
-function useNowMovieplaying() {
+function useSeries() {
   const dispatch = useDispatch()
 
   const url =
-    'https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1'
+    'https://api.themoviedb.org/3/tv/airing_today?language=en-US&page=1'
   useEffect(() => {
     async function tmdb() {
       try {
         const raw = await fetch(url, options)
-        if (!raw) return
 
+        if (!raw) return
         const data = await raw.json()
         if (!data) return
 
-        dispatch(addmovie({ movies: data.results }))
+        dispatch(addmovie({ series: data.results }))
       } catch (error) {
-        console.error('Error fetching data:', error)
+        console.error('Error fetching series:', error)
       }
     }
     tmdb()
   }, [])
 }
 
-export default useNowMovieplaying
+export default useSeries

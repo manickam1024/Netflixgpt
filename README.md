@@ -24,3 +24,6 @@ Create movieSlice
 Update Store with movies Data
 Planning for MainContauiner & secondary container
 Fetch Data for Trailer Video
+segregated main and secondary container videobackground
+updated my browse page
+enabeld the scroll using 2 divs

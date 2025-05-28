@@ -32,7 +32,6 @@ function useTrailer() {
         )
         // as i said there are multiple videos from tht i need filter the trailer
         const trailer = filterdata.length ? filterdata[0] : json.results[0]
-        console.log('Trailer Key:', trailer?.key)
 
         if (trailer?.key) {
           setKey(trailer.key)
