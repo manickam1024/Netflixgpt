@@ -21,11 +21,8 @@ const Header = () => {
   //getting data of the selectd language after the dispatch
   const lang = useSelector((store) => store.gpt.lang)
   //if it was static i could have used languages.eng ,dynamicallly im getting the object
-  // const signout = languages[lang].signout
-  if (lang) {
-    const search = languages[lang].signout
-    console.log(search)
-  }
+  const signoutText =
+    lang && languages[lang]?.signout ? languages[lang].signout : 'signout'
 
   console.log(lang)
   useEffect(() => {
@@ -88,7 +85,7 @@ const Header = () => {
             onClick={handlesignout}
             className="p-2 w-24 bg-red-600 text-white text-l mt-3 font-bold rounded-md mr-10"
           >
-            {!lang ? 'signout' : ' search'}
+            {!lang ? 'signout' : signoutText}
           </button>
         </div>
         <div className=" text-white text-l font-bold relative top-4">
