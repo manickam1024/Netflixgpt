@@ -207,11 +207,11 @@
       });
     }
   }
-})({"frqA7":[function(require,module,exports,__globalThis) {
+})({"6GdUy":[function(require,module,exports,__globalThis) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
-var HMR_SERVER_PORT = 1234;
+var HMR_SERVER_PORT = 53415;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "439701173a9199ea";
 var HMR_USE_SSE = false;
@@ -32371,6 +32371,7 @@ const Login = ()=>{
         }).catch((error)=>{
             const errorCode = error.code;
             const errorMessage = error.message;
+            window.alert(errorMessage);
         // ..
         });
     }
@@ -32387,13 +32388,13 @@ const Login = ()=>{
                         alt: ""
                     }, void 0, false, {
                         fileName: "src/components/login.js",
-                        lineNumber: 84,
+                        lineNumber: 86,
                         columnNumber: 9
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/components/login.js",
-                lineNumber: 82,
+                lineNumber: 84,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -32411,7 +32412,7 @@ const Login = ()=>{
                         ]
                     }, void 0, true, {
                         fileName: "src/components/login.js",
-                        lineNumber: 95,
+                        lineNumber: 97,
                         columnNumber: 9
                     }, undefined),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("form", {
@@ -32428,13 +32429,13 @@ const Login = ()=>{
                                 required: true
                             }, void 0, false, {
                                 fileName: "src/components/login.js",
-                                lineNumber: 101,
+                                lineNumber: 103,
                                 columnNumber: 11
                             }, undefined),
                             ' ',
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("br", {}, void 0, false, {
                                 fileName: "src/components/login.js",
-                                lineNumber: 110,
+                                lineNumber: 112,
                                 columnNumber: 11
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -32446,7 +32447,7 @@ const Login = ()=>{
                                 required: true
                             }, void 0, false, {
                                 fileName: "src/components/login.js",
-                                lineNumber: 111,
+                                lineNumber: 113,
                                 columnNumber: 11
                             }, undefined),
                             !signin && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -32458,7 +32459,7 @@ const Login = ()=>{
                                 required: true
                             }, void 0, false, {
                                 fileName: "src/components/login.js",
-                                lineNumber: 120,
+                                lineNumber: 122,
                                 columnNumber: 13
                             }, undefined),
                             !signin && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -32470,7 +32471,7 @@ const Login = ()=>{
                                 required: true
                             }, void 0, false, {
                                 fileName: "src/components/login.js",
-                                lineNumber: 130,
+                                lineNumber: 132,
                                 columnNumber: 13
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
@@ -32478,7 +32479,7 @@ const Login = ()=>{
                                 children: msg
                             }, void 0, false, {
                                 fileName: "src/components/login.js",
-                                lineNumber: 139,
+                                lineNumber: 141,
                                 columnNumber: 11
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -32490,7 +32491,7 @@ const Login = ()=>{
                                 children: signin ? ' login' : 'signup'
                             }, void 0, false, {
                                 fileName: "src/components/login.js",
-                                lineNumber: 140,
+                                lineNumber: 142,
                                 columnNumber: 11
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -32503,25 +32504,25 @@ const Login = ()=>{
                                 children: signin ? 'New user ? just sign up' : 'Existing user? sign in '
                             }, void 0, false, {
                                 fileName: "src/components/login.js",
-                                lineNumber: 149,
+                                lineNumber: 151,
                                 columnNumber: 11
                             }, undefined)
                         ]
                     }, void 0, true, {
                         fileName: "src/components/login.js",
-                        lineNumber: 99,
+                        lineNumber: 101,
                         columnNumber: 9
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/components/login.js",
-                lineNumber: 90,
+                lineNumber: 92,
                 columnNumber: 7
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/components/login.js",
-        lineNumber: 79,
+        lineNumber: 81,
         columnNumber: 5
     }, undefined);
 };
@@ -65372,7 +65373,7 @@ const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 const Netflixlist = ({ subdata, title, length })=>{
     if (!subdata || subdata.length === 0) return null;
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-        className: "my-6",
+        className: "my-6 h-32 w-72",
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
                 className: "text-2xl font-bold text-white mb-4",
@@ -65436,6 +65437,6 @@ $RefreshReg$(_c, "Netflixlist");
   globalThis.$RefreshReg$ = prevRefreshReg;
   globalThis.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"dVPUn","react":"jMk1U","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"7h6Pi"}]},["frqA7","hh6uc"], "hh6uc", "parcelRequire18d1", {}, null, null, "http://localhost:1234")
+},{"react/jsx-dev-runtime":"dVPUn","react":"jMk1U","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"7h6Pi"}]},["6GdUy","hh6uc"], "hh6uc", "parcelRequire18d1", {}, null, null, "http://localhost:53415")
 
 //# sourceMappingURL=netflixgpt.2c54e4d8.js.map
