@@ -1,5 +1,6 @@
 {
-  "projects": {
-    "default": "netflixgpt-c976e"
+  "hosting": {
+    "site": "netflixgpt-c976e",
+    "public": "public"
   }
 }

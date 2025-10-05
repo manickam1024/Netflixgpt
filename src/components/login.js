@@ -6,8 +6,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from 'firebase/auth'
-import firebaseConfig from '../utils/Firebase'
 import { getAuth, updateProfile } from 'firebase/auth'
+import app from '../utils/firebase'
 
 const Login = () => {
   const [signin, setsignin] = useState(true)
@@ -18,7 +18,7 @@ const Login = () => {
   const password = useRef(null)
   const username = useRef(null)
   const reenterpassword = useRef(null)
-  const auth = getAuth()
+  const auth = getAuth(app)
 
   function handleclick() {
     const result = validate(email.current.value, password.current.value)

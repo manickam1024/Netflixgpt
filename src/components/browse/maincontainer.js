@@ -6,21 +6,25 @@ import Secondarycontainer from './secondarycontainer'
 const Maincontainer = () => {
   const key = useTrailer()
   const select = useSelector((store) => store?.movieslice?.items)
-  const maincontainer = select?.[0]?.movies?.[0]
+  const background = useSelector((store) => store?.gpt?.Videobackground)
+  const maincontainer = select?.[0]?.movies?.[3]
   if (!maincontainer) return null
 
   const { overview, original_title } = maincontainer
-
   return (
     <div className="relative overflow-x-hidden scrollbar-hide">
       <div>
         {' '}
         <Videobackground tkey={key} />
-        <div className="absolute z-10  bottom-0 my-56 text-sm  w-1/3 pl-20 text-white opacity-80 font-light">
-          {overview}
-        </div>
-        <div className="absolute z-10 h-max bottom-0 my-72 pl-20 text-2xl font-bold  text-white ">
-          {original_title}
+        {console.log(key)}
+        <div className="absolute bottom-0 my-60 w-1/3  ">
+          {' '}
+          <div className=" relative z-20 h-max  pl-20 text-2xl font-bold mb-4 text-white ">
+            {background ? background.original_title : original_title}
+          </div>
+          <div className=" relative z-10  text-sm  w-auto pl-20 text-white opacity-80 font-light">
+            {background ? background.overview : overview}
+          </div>
         </div>
         <div className="absolute z-10 bottom-0 my-36 pl-20">
           {' '}

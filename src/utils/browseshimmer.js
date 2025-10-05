@@ -1,7 +1,7 @@
 const Browseshimmer = () => {
   return (
     <div className="relative overflow-x-hidden">
-      <div className="absolute z-10  bottom-0 my-44 text-sm font-bold w-1/3 pl-2  opacity-80 font-light"></div>
+      <div className="absolute z-10  bottom-0 my-44 text-sm font-bold w-1/3 pl-2  opacity-80 "></div>
       <div className="absolute z-10 bottom-0 my-72 pl-20 text-2xl font-bold  text-white "></div>
       <div className="absolute z-10 bottom-0 my-24 pl-20">
         {' '}

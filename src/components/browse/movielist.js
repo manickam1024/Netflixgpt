@@ -1,4 +1,8 @@
+import { useDispatch } from 'react-redux'
+import { addbackground } from '../../utils/gptslice'
+
 const Movielist = ({ subdata, title }) => {
+  const dispatch = useDispatch()
   return (
     <div className="my-16 ml-20 overflow-x-scroll scrollbar-hide">
       <div>
@@ -9,7 +13,11 @@ const Movielist = ({ subdata, title }) => {
       </div>
       <div className="flex gap-4 w-max ">
         {subdata?.map((movie) => (
-          <div key={movie.id} className="flex-shrink-0">
+          <div
+            key={movie.id}
+            className="flex-shrink-0"
+            onClick={() => dispatch(addbackground(movie))}
+          >
             <img
               src={'https://image.tmdb.org/t/p/w200' + movie.poster_path}
               alt=""

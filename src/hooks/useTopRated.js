@@ -1,7 +1,8 @@
 import { addmovie } from '../utils/movieslice'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { options } from '../utils/constants'
+import { addbackground } from '../utils/gptslice'
 
 // this is used in browse
 function useTopRated() {

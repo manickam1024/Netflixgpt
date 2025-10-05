@@ -10,10 +10,27 @@ export const options = {
 }
 
 export const languages = {
-  eng: { signout: 'signout', search: 'search here for movies' },
-  hindi: { signout: 'साइन आउट', search: 'फ़िल्में खोजें' },
+  eng: {
+    signout: 'signout',
+    search: 'search here for movies',
+    back: 'back',
+    button: 'search',
+  },
+  hindi: {
+    signout: 'साइन आउट',
+    search: 'फ़िल्में खोजें',
+    back: 'पीछे',
+    button: 'बटन',
+  },
   japanese: {
     signout: 'サインアウト',
     search: 'ここでK映画を検索してください',
+    back: 'を検索',
+    button: 'ボタン',
   },
 }
+
+// export const token = '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'
+export const token =
+  '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'
+export const endpoint = 'https://models.github.ai/inference'

@@ -4,20 +4,19 @@ import { options } from '../utils/constants'
 
 function useTrailer() {
   //in my strore i have storeed the list of movies you can see in my browse component
-  const select = useSelector((store) => store?.movieslice?.items)
+  const newselect = useSelector((store) => store?.gpt?.Videobackground)
+
+  const id = newselect && newselect.id
   const [key, setKey] = useState(null)
 
   //here im  getting all the videos (sneekpeek,bts,teaser,trailer...etc) of that particular video
   useEffect(() => {
-    // check if movie exists
-    const maincontainer = select?.[0]?.movies?.[0]
-    const id = maincontainer?.id
-    if (!id) return
-
     async function dataforvideo() {
       try {
         const data = await fetch(
-          `https://api.themoviedb.org/3/movie/${id}/videos?language=en-US`,
+          `https://api.themoviedb.org/3/movie/${
+            id ? id : 1376434
+          }/videos?language=en-US`,
           options
         )
         const json = await data.json()
@@ -42,7 +41,7 @@ function useTrailer() {
     }
 
     dataforvideo()
-  }, [select]) // important: add 'select' as dependency
+  }, [newselect]) // important: add 'select' as dependency
 
   return key
 }
