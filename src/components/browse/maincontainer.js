@@ -12,7 +12,7 @@ const Maincontainer = () => {
 
   const { overview, original_title } = maincontainer
   return (
-    <div className="relative overflow-x-hidden scrollbar-hide">
+    <div className="relative overflow-x-hidden scrollbar-hide bg-black">
       <div>
         {' '}
         <Videobackground tkey={key} />

@@ -33,3 +33,7 @@ Afterdeployment
 
 1.use vpn to access
 2.to push even though u have a secrect key just accept "its only for test"
+3.if u dont see the deployment changes hard relod or empty cache reload
+4.if the gpt is not working update the token
+5.Firebase CLI reads .firebaserc to know which project to deploy to(it can contain multiple projects ), and reads firebase.json to know what to deploy.
+6.on referesh i used to get the blank page or error page that was because my firebase was directly searching for the /browse page but it was handled by router at index.html/app/js soo rewrite in firebase.json

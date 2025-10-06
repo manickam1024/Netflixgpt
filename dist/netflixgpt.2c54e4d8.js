@@ -207,11 +207,11 @@
       });
     }
   }
-})({"6GdUy":[function(require,module,exports,__globalThis) {
+})({"frqA7":[function(require,module,exports,__globalThis) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
-var HMR_SERVER_PORT = 53415;
+var HMR_SERVER_PORT = 1234;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "439701173a9199ea";
 var HMR_USE_SSE = false;
@@ -744,23 +744,23 @@ const App = ()=>{
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _headerDefault.default), {}, void 0, false, {
                 fileName: "src/App.js",
-                lineNumber: 13,
+                lineNumber: 19,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Outlet), {}, void 0, false, {
                 fileName: "src/App.js",
-                lineNumber: 14,
+                lineNumber: 20,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _footerDefault.default), {}, void 0, false, {
                 fileName: "src/App.js",
-                lineNumber: 15,
+                lineNumber: 21,
                 columnNumber: 7
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/App.js",
-        lineNumber: 12,
+        lineNumber: 18,
         columnNumber: 5
     }, undefined);
 };
@@ -771,15 +771,18 @@ const router = (0, _reactRouterDom.createBrowserRouter)([
         path: '/',
         element: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)(App, {}, void 0, false, {
             fileName: "src/App.js",
-            lineNumber: 24,
+            lineNumber: 30,
             columnNumber: 14
         }, undefined),
         children: [
             {
                 path: '/',
-                element: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _browseDefault.default), {}, void 0, false, {
+                element: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Navigate), {
+                    to: "/login",
+                    replace: true
+                }, void 0, false, {
                     fileName: "src/App.js",
-                    lineNumber: 28,
+                    lineNumber: 34,
                     columnNumber: 18
                 }, undefined)
             },
@@ -787,7 +790,7 @@ const router = (0, _reactRouterDom.createBrowserRouter)([
                 path: '/login',
                 element: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _loginDefault.default), {}, void 0, false, {
                     fileName: "src/App.js",
-                    lineNumber: 32,
+                    lineNumber: 38,
                     columnNumber: 18
                 }, undefined)
             },
@@ -795,7 +798,7 @@ const router = (0, _reactRouterDom.createBrowserRouter)([
                 path: '/browse',
                 element: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _browseDefault.default), {}, void 0, false, {
                     fileName: "src/App.js",
-                    lineNumber: 36,
+                    lineNumber: 42,
                     columnNumber: 18
                 }, undefined)
             }
@@ -807,7 +810,7 @@ root.render(/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.RouterP
     router: router
 }, void 0, false, {
     fileName: "src/App.js",
-    lineNumber: 42,
+    lineNumber: 49,
     columnNumber: 13
 }, undefined));
 var _c;
@@ -54441,7 +54444,7 @@ const languages = {
         button: "\u30DC\u30BF\u30F3"
     }
 };
-const token = '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';
+const token = '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';
 const endpoint = 'https://models.github.ai/inference';
 
 },{"firebase/auth":"4ZBbi","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"9XP3q":[function(require,module,exports,__globalThis) {
@@ -54765,7 +54768,7 @@ const Maincontainer = ()=>{
     if (!maincontainer) return null;
     const { overview, original_title } = maincontainer;
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-        className: "relative overflow-x-hidden scrollbar-hide",
+        className: "relative overflow-x-hidden scrollbar-hide bg-black",
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                 children: [
@@ -55218,7 +55221,7 @@ const Gpt = ()=>{
             if (dataFromStringToArray) dispatch((0, _gptslice.addmovie)(dataFromStringToArray));
             else console.warn('No content returned from OpenAI.');
         } catch (error) {
-            console.error('Error while fetching movie recommendations:', error);
+            window.alert('token expired please either change the Ai model');
             alert('Something went wrong while getting movie recommendations.');
         }
     }
@@ -55300,7 +55303,7 @@ const Gpt = ()=>{
                                         left: '-300px'
                                     },
                                     children: posterlist[0] != null && posterlist[0].filter(Boolean).map((movie, index)=>{
-                                        return movie.length > 7 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _netflixlistDefault.default), {
+                                        return movie.length < 5 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _netflixlistDefault.default), {
                                             subdata: movie,
                                             title: movie[0]?.title,
                                             length: movie.length
@@ -65373,7 +65376,7 @@ const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 const Netflixlist = ({ subdata, title, length })=>{
     if (!subdata || subdata.length === 0) return null;
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-        className: "my-6 h-32 w-72",
+        className: "my-6",
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
                 className: "text-2xl font-bold text-white mb-4",
@@ -65437,6 +65440,6 @@ $RefreshReg$(_c, "Netflixlist");
   globalThis.$RefreshReg$ = prevRefreshReg;
   globalThis.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"dVPUn","react":"jMk1U","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"7h6Pi"}]},["6GdUy","hh6uc"], "hh6uc", "parcelRequire18d1", {}, null, null, "http://localhost:53415")
+},{"react/jsx-dev-runtime":"dVPUn","react":"jMk1U","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"7h6Pi"}]},["frqA7","hh6uc"], "hh6uc", "parcelRequire18d1", {}, null, null, "http://localhost:1234")
 
 //# sourceMappingURL=netflixgpt.2c54e4d8.js.map

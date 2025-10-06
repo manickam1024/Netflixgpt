@@ -30,7 +30,6 @@ export const languages = {
   },
 }
 
-// export const token = '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'
 export const token =
-  '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'
+  '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'
 export const endpoint = 'https://models.github.ai/inference'

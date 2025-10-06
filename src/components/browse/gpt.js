@@ -52,7 +52,7 @@ export const Gpt = () => {
         console.warn('No content returned from OpenAI.')
       }
     } catch (error) {
-      console.error('Error while fetching movie recommendations:', error)
+      window.alert('token expired please either change the Ai model')
       alert('Something went wrong while getting movie recommendations.')
     }
   }
@@ -127,7 +127,7 @@ export const Gpt = () => {
               {posterlist[0] != null &&
                 posterlist[0].filter(Boolean).map((movie, index) => {
                   return (
-                    movie.length > 7 && (
+                    movie.length < 5 && (
                       <Netflixlist
                         subdata={movie}
                         title={movie[0]?.title}
