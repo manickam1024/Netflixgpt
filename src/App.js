@@ -1,10 +1,5 @@
 import ReactDOM from 'react-dom/client'
-import {
-  createBrowserRouter,
-  Outlet,
-  RouterProvider,
-  Navigate,
-} from 'react-router-dom'
+import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
 import Login from './components/login'
 import Header from './components/header'
 import Footer from './components/footer'
@@ -31,7 +26,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Navigate to="/login" replace />, // 👈 Redirects '/' to '/login'
+        element: <Login />, // 👈 Redirects '/' to '/login'
       },
       {
         path: '/login',
@@ -41,6 +36,7 @@ const router = createBrowserRouter([
         path: '/browse',
         element: <Browse />,
       },
+      { rewrites: [{ source: '**', destination: '/index.html' }] },
     ],
   },
 ])

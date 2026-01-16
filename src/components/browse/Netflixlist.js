@@ -2,36 +2,20 @@
 
 import React from 'react'
 
-const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500'
+const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w200'
 
-const Netflixlist = ({ subdata, title, length }) => {
-  if (!subdata || subdata.length === 0) return null
-
+const Netflixlist = ({ data }) => {
+  if (!data || data.length === 0) return null
+  console.log(data)
   return (
     <div className="my-6">
-      {/* Title */}
-      <h2 className="text-2xl font-bold text-white mb-4">{title}</h2>
-
-      {/* Scrollable Row */}
-      <div className="flex space-x-4 overflow-x-scroll scrollbar-hide">
-        {subdata.map((movie, index) => {
-          // Avoid empty or broken posters
-          if (!movie.poster_path) return null
-
-          return (
-            <div
-              key={movie.id || index}
-              className="min-w-[200px] cursor-pointer hover:scale-110 transition-transform duration-300"
-            >
-              <img
-                src={`${IMAGE_BASE_URL}${movie.poster_path}`}
-                alt={movie.title}
-                className="rounded-lg shadow-lg"
-              />
-              <p className="text-sm text-white mt-2 truncate">{movie.title}</p>
-            </div>
-          )
-        })}
+      <div className="min-w-[100px] cursor-pointer hover:scale-110 transition-transform duration-300">
+        <img
+          src={`${IMAGE_BASE_URL}${data.poster_path}`}
+          alt={data.title}
+          className="rounded-lg shadow-lg mr-8"
+        />
+        <p className="text-sm text-white mt-2 truncate">{data.title}</p>
       </div>
     </div>
   )

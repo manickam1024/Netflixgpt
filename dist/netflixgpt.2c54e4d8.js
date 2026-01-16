@@ -744,23 +744,23 @@ const App = ()=>{
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _headerDefault.default), {}, void 0, false, {
                 fileName: "src/App.js",
-                lineNumber: 19,
+                lineNumber: 14,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Outlet), {}, void 0, false, {
                 fileName: "src/App.js",
-                lineNumber: 20,
+                lineNumber: 15,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _footerDefault.default), {}, void 0, false, {
                 fileName: "src/App.js",
-                lineNumber: 21,
+                lineNumber: 16,
                 columnNumber: 7
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/App.js",
-        lineNumber: 18,
+        lineNumber: 13,
         columnNumber: 5
     }, undefined);
 };
@@ -771,18 +771,15 @@ const router = (0, _reactRouterDom.createBrowserRouter)([
         path: '/',
         element: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)(App, {}, void 0, false, {
             fileName: "src/App.js",
-            lineNumber: 30,
+            lineNumber: 25,
             columnNumber: 14
         }, undefined),
         children: [
             {
                 path: '/',
-                element: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Navigate), {
-                    to: "/login",
-                    replace: true
-                }, void 0, false, {
+                element: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _loginDefault.default), {}, void 0, false, {
                     fileName: "src/App.js",
-                    lineNumber: 34,
+                    lineNumber: 29,
                     columnNumber: 18
                 }, undefined)
             },
@@ -790,7 +787,7 @@ const router = (0, _reactRouterDom.createBrowserRouter)([
                 path: '/login',
                 element: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _loginDefault.default), {}, void 0, false, {
                     fileName: "src/App.js",
-                    lineNumber: 38,
+                    lineNumber: 33,
                     columnNumber: 18
                 }, undefined)
             },
@@ -798,9 +795,17 @@ const router = (0, _reactRouterDom.createBrowserRouter)([
                 path: '/browse',
                 element: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _browseDefault.default), {}, void 0, false, {
                     fileName: "src/App.js",
-                    lineNumber: 42,
+                    lineNumber: 37,
                     columnNumber: 18
                 }, undefined)
+            },
+            {
+                rewrites: [
+                    {
+                        source: '**',
+                        destination: '/index.html'
+                    }
+                ]
             }
         ]
     }
@@ -810,7 +815,7 @@ root.render(/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.RouterP
     router: router
 }, void 0, false, {
     fileName: "src/App.js",
-    lineNumber: 49,
+    lineNumber: 45,
     columnNumber: 13
 }, undefined));
 var _c;
@@ -25066,7 +25071,7 @@ module.exports = require("ef03b89c8fe2794e");
 
 },{}],"61z4w":[function(require,module,exports,__globalThis) {
 /**
- * React Router DOM v6.30.1
+ * React Router DOM v6.30.3
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -26518,7 +26523,7 @@ let savedScrollPositions = {};
 
 },{"react":"jMk1U","react-dom":"i4X7T","react-router":"4ChVy","@remix-run/router":"2GHDR","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"4ChVy":[function(require,module,exports,__globalThis) {
 /**
- * React Router v6.30.1
+ * React Router v6.30.3
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -27821,7 +27826,7 @@ function createMemoryRouter(routes, opts) {
 
 },{"react":"jMk1U","@remix-run/router":"2GHDR","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2GHDR":[function(require,module,exports,__globalThis) {
 /**
- * @remix-run/router v1.23.0
+ * @remix-run/router v1.23.2
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -28638,6 +28643,8 @@ function decodePath(value) {
     return null;
     return pathname.slice(startIndex) || "/";
 }
+const ABSOLUTE_URL_REGEX$1 = /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i;
+const isAbsoluteUrl = (url)=>ABSOLUTE_URL_REGEX$1.test(url);
 /**
  * Returns a resolved path object relative to the given pathname.
  *
@@ -28645,7 +28652,19 @@ function decodePath(value) {
  */ function resolvePath(to, fromPathname) {
     if (fromPathname === void 0) fromPathname = "/";
     let { pathname: toPathname, search = "", hash = "" } = typeof to === "string" ? parsePath(to) : to;
-    let pathname = toPathname ? toPathname.startsWith("/") ? toPathname : resolvePathname(toPathname, fromPathname) : fromPathname;
+    let pathname;
+    if (toPathname) {
+        if (isAbsoluteUrl(toPathname)) pathname = toPathname;
+        else {
+            if (toPathname.includes("//")) {
+                let oldPathname = toPathname;
+                toPathname = toPathname.replace(/\/\/+/g, "/");
+                warning(false, "Pathnames cannot have embedded double slashes - normalizing " + (oldPathname + " -> " + toPathname));
+            }
+            if (toPathname.startsWith("/")) pathname = resolvePathname(toPathname.substring(1), "/");
+            else pathname = resolvePathname(toPathname, fromPathname);
+        }
+    } else pathname = fromPathname;
     return {
         pathname,
         search: normalizeSearch(search),
@@ -29743,7 +29762,7 @@ const TRANSITIONS_STORAGE_KEY = "remix-router-transitions";
                 // If the user didn't explicity indicate replace behavior, replace if
                 // we redirected to the exact same location we're currently at to avoid
                 // double back-buttons
-                let location = normalizeRedirectLocation(result.response.headers.get("Location"), new URL(request.url), basename);
+                let location = normalizeRedirectLocation(result.response.headers.get("Location"), new URL(request.url), basename, init.history);
                 replace = location === state.location.pathname + state.location.search;
             }
             await startRedirectNavigation(request, result, true, {
@@ -30280,7 +30299,7 @@ const TRANSITIONS_STORAGE_KEY = "remix-router-transitions";
         if (redirect.response.headers.has("X-Remix-Revalidate")) isRevalidationRequired = true;
         let location = redirect.response.headers.get("Location");
         invariant(location, "Expected a Location header on the redirect Response");
-        location = normalizeRedirectLocation(location, new URL(request.url), basename);
+        location = normalizeRedirectLocation(location, new URL(request.url), basename, init.history);
         let redirectLocation = createLocation(state.location, location, {
             _isRedirect: true
         });
@@ -31784,14 +31803,34 @@ function normalizeRelativeRoutingRedirectResponse(response, request, routeId, ma
     }
     return response;
 }
-function normalizeRedirectLocation(location, currentUrl, basename) {
+function normalizeRedirectLocation(location, currentUrl, basename, historyInstance) {
+    // Match Chrome's behavior:
+    // https://github.com/chromium/chromium/blob/216dbeb61db0c667e62082e5f5400a32d6983df3/content/public/common/url_utils.cc#L82
+    let invalidProtocols = [
+        "about:",
+        "blob:",
+        "chrome:",
+        "chrome-untrusted:",
+        "content:",
+        "data:",
+        "devtools:",
+        "file:",
+        "filesystem:",
+        // eslint-disable-next-line no-script-url
+        "javascript:"
+    ];
     if (ABSOLUTE_URL_REGEX.test(location)) {
         // Strip off the protocol+origin for same-origin + same-basename absolute redirects
         let normalizedLocation = location;
         let url = normalizedLocation.startsWith("//") ? new URL(currentUrl.protocol + normalizedLocation) : new URL(normalizedLocation);
+        if (invalidProtocols.includes(url.protocol)) throw new Error("Invalid redirect location");
         let isSameBasename = stripBasename(url.pathname, basename) != null;
         if (url.origin === currentUrl.origin && isSameBasename) return url.pathname + url.search + url.hash;
     }
+    try {
+        let url = historyInstance.createURL(location);
+        if (invalidProtocols.includes(url.protocol)) throw new Error("Invalid redirect location");
+    } catch (e) {}
     return location;
 }
 // Utility method for creating the Request instances for loaders/actions during
@@ -50393,6 +50432,7 @@ parcelHelpers.export(exports, "weakMapMemoize", ()=>(0, _reselect.weakMapMemoize
 var _redux = require("redux");
 parcelHelpers.exportAll(_redux, exports);
 var _immer = require("immer");
+// src/index.ts
 var _reselect = require("reselect");
 // src/getDefaultMiddleware.ts
 var _reduxThunk = require("redux-thunk");
@@ -50425,6 +50465,7 @@ var __objRest = (source, exclude)=>{
     return target;
 };
 var __publicField = (obj, key, value)=>__defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+// src/createDraftSafeSelector.ts
 var createDraftSafeSelectorCreator = (...args)=>{
     const createSelector2 = (0, _reselect.createSelectorCreator)(...args);
     const createDraftSafeSelector2 = Object.assign((...args2)=>{
@@ -50438,6 +50479,7 @@ var createDraftSafeSelectorCreator = (...args)=>{
     return createDraftSafeSelector2;
 };
 var createDraftSafeSelector = /* @__PURE__ */ createDraftSafeSelectorCreator((0, _reselect.weakMapMemoize));
+// src/devtoolsExtension.ts
 var composeWithDevTools = typeof window !== "undefined" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : function() {
     if (arguments.length === 0) return void 0;
     if (typeof arguments[0] === "object") return 0, _redux.compose;
@@ -50507,6 +50549,7 @@ function createActionCreatorInvariantMiddleware(options = {}) {
                 return next(action);
             };
 }
+// src/utils.ts
 function getTimeMeasureUtils(maxDelay, fnName) {
     let elapsed = 0;
     return {
@@ -50553,25 +50596,32 @@ function getOrInsertComputed(map, key, compute) {
 function isImmutableDefault(value) {
     return typeof value !== "object" || value == null || Object.isFrozen(value);
 }
-function trackForMutations(isImmutable, ignorePaths, obj) {
-    const trackedProperties = trackProperties(isImmutable, ignorePaths, obj);
+function trackForMutations(isImmutable, ignoredPaths, obj) {
+    const trackedProperties = trackProperties(isImmutable, ignoredPaths, obj);
     return {
         detectMutations () {
-            return detectMutations(isImmutable, ignorePaths, trackedProperties, obj);
+            return detectMutations(isImmutable, ignoredPaths, trackedProperties, obj);
         }
     };
 }
-function trackProperties(isImmutable, ignorePaths = [], obj, path = "", checkedObjects = /* @__PURE__ */ new Set()) {
+function trackProperties(isImmutable, ignoredPaths = [], obj, path = "", checkedObjects = /* @__PURE__ */ new Set()) {
     const tracked = {
         value: obj
     };
     if (!isImmutable(obj) && !checkedObjects.has(obj)) {
         checkedObjects.add(obj);
         tracked.children = {};
+        const hasIgnoredPaths = ignoredPaths.length > 0;
         for(const key in obj){
-            const childPath = path ? path + "." + key : key;
-            if (ignorePaths.length && ignorePaths.indexOf(childPath) !== -1) continue;
-            tracked.children[key] = trackProperties(isImmutable, ignorePaths, obj[key], childPath);
+            const nestedPath = path ? path + "." + key : key;
+            if (hasIgnoredPaths) {
+                const hasMatches = ignoredPaths.some((ignored)=>{
+                    if (ignored instanceof RegExp) return ignored.test(nestedPath);
+                    return nestedPath === ignored;
+                });
+                if (hasMatches) continue;
+            }
+            tracked.children[key] = trackProperties(isImmutable, ignoredPaths, obj[key], nestedPath);
         }
     }
     return tracked;
@@ -50655,6 +50705,7 @@ function createImmutableStateInvariantMiddleware(options = {}) {
         };
     }
 }
+// src/serializableStateInvariantMiddleware.ts
 function isPlain(val) {
     const type = typeof val;
     return val == null || type === "string" || type === "boolean" || type === "number" || Array.isArray(val) || (0, _redux.isPlainObject)(val);
@@ -51138,7 +51189,9 @@ var createAsyncThunk = /* @__PURE__ */ (()=>{
                                     message: abortReason || "Aborted"
                                 });
                             };
-                            abortController.signal.addEventListener("abort", abortHandler);
+                            abortController.signal.addEventListener("abort", abortHandler, {
+                                once: true
+                            });
                         });
                         dispatch(pending(requestId, arg, (_b = options == null ? void 0 : options.getPendingMeta) == null ? void 0 : _b.call(options, {
                             requestId,
@@ -51464,6 +51517,7 @@ function createSelectorsFactory() {
         getSelectors
     };
 }
+// src/entities/state_adapter.ts
 var isDraftTyped = (0, _immer.isDraft);
 function createSingleArgumentStateOperator(mutator) {
     const operator = createStateOperator((_, state)=>mutator(state));
@@ -51487,6 +51541,7 @@ function createStateOperator(mutator) {
         return (0, _immer.produce)(state, runMutator);
     };
 }
+// src/entities/utils.ts
 function selectIdValue(entity, selectId) {
     const key = selectId(entity);
     if (key === void 0) console.warn("The entity passed to the `selectId` implementation returned undefined.", "You should probably provide your own `selectId` implementation.", "The entity that was passed:", entity, "The `selectId` implementation:", selectId.toString());
@@ -51661,7 +51716,13 @@ function createSortedStateAdapter(selectId, comparer) {
     function addManyMutably(newEntities, state, existingIds) {
         newEntities = ensureEntitiesArray(newEntities);
         const existingKeys = new Set(existingIds != null ? existingIds : getCurrent(state.ids));
-        const models = newEntities.filter((model)=>!existingKeys.has(selectIdValue(model, selectId)));
+        const addedKeys = /* @__PURE__ */ new Set();
+        const models = newEntities.filter((model)=>{
+            const modelId = selectIdValue(model, selectId);
+            const notAdded = !addedKeys.has(modelId);
+            if (notAdded) addedKeys.add(modelId);
+            return !existingKeys.has(modelId) && notAdded;
+        });
         if (models.length !== 0) mergeFunction(state, models);
     }
     function setOneMutably(entity, state) {
@@ -51670,9 +51731,15 @@ function createSortedStateAdapter(selectId, comparer) {
         ], state);
     }
     function setManyMutably(newEntities, state) {
+        let deduplicatedEntities = {};
         newEntities = ensureEntitiesArray(newEntities);
         if (newEntities.length !== 0) {
-            for (const item of newEntities)delete state.entities[selectId(item)];
+            for (const item of newEntities){
+                const entityId = selectId(item);
+                deduplicatedEntities[entityId] = item;
+                delete state.entities[entityId];
+            }
+            newEntities = ensureEntitiesArray(deduplicatedEntities);
             mergeFunction(state, newEntities);
         }
     }
@@ -51806,23 +51873,9 @@ var addAbortSignalListener = (abortSignal, callback)=>{
     });
     return ()=>abortSignal.removeEventListener("abort", callback);
 };
-var abortControllerWithReason = (abortController, reason)=>{
-    const signal = abortController.signal;
-    if (signal.aborted) return;
-    if (!("reason" in signal)) Object.defineProperty(signal, "reason", {
-        enumerable: true,
-        value: reason,
-        configurable: true,
-        writable: true
-    });
-    abortController.abort(reason);
-};
 // src/listenerMiddleware/task.ts
 var validateActive = (signal)=>{
-    if (signal.aborted) {
-        const { reason } = signal;
-        throw new TaskAbortError(reason);
-    }
+    if (signal.aborted) throw new TaskAbortError(signal.reason);
 };
 function raceWithSignal(signal, promise) {
     let cleanup = noop2;
@@ -51874,7 +51927,7 @@ var { assign } = Object;
 var INTERNAL_NIL_TOKEN = {};
 var alm = "listenerMiddleware";
 var createFork = (parentAbortSignal, parentBlockingPromises)=>{
-    const linkControllers = (controller)=>addAbortSignalListener(parentAbortSignal, ()=>abortControllerWithReason(controller, parentAbortSignal.reason));
+    const linkControllers = (controller)=>addAbortSignalListener(parentAbortSignal, ()=>controller.abort(parentAbortSignal.reason));
     return (taskExecutor, opts)=>{
         assertFunction(taskExecutor, "taskExecutor");
         const childAbortController = new AbortController();
@@ -51889,12 +51942,12 @@ var createFork = (parentAbortSignal, parentBlockingPromises)=>{
             });
             validateActive(childAbortController.signal);
             return result2;
-        }, ()=>abortControllerWithReason(childAbortController, taskCompleted));
+        }, ()=>childAbortController.abort(taskCompleted));
         if (opts == null ? void 0 : opts.autoJoin) parentBlockingPromises.push(result.catch(noop2));
         return {
             result: createPause(parentAbortSignal)(result),
             cancel () {
-                abortControllerWithReason(childAbortController, taskCancelled);
+                childAbortController.abort(taskCancelled);
             }
         };
     };
@@ -51975,12 +52028,12 @@ var findListenerEntry = (listenerMap, options)=>{
 };
 var cancelActiveListeners = (entry)=>{
     entry.pending.forEach((controller)=>{
-        abortControllerWithReason(controller, listenerCancelled);
+        controller.abort(listenerCancelled);
     });
 };
-var createClearListenerMiddleware = (listenerMap)=>{
+var createClearListenerMiddleware = (listenerMap, executingListeners)=>{
     return ()=>{
-        listenerMap.forEach(cancelActiveListeners);
+        for (const listener2 of executingListeners.keys())cancelActiveListeners(listener2);
         listenerMap.clear();
     };
 };
@@ -52005,6 +52058,18 @@ var defaultErrorHandler = (...args)=>{
 };
 var createListenerMiddleware = (middlewareOptions = {})=>{
     const listenerMap = /* @__PURE__ */ new Map();
+    const executingListeners = /* @__PURE__ */ new Map();
+    const trackExecutingListener = (entry)=>{
+        var _a;
+        const count = (_a = executingListeners.get(entry)) != null ? _a : 0;
+        executingListeners.set(entry, count + 1);
+    };
+    const untrackExecutingListener = (entry)=>{
+        var _a;
+        const count = (_a = executingListeners.get(entry)) != null ? _a : 1;
+        if (count === 1) executingListeners.delete(entry);
+        else executingListeners.set(entry, count - 1);
+    };
     const { extra, onError = defaultErrorHandler } = middlewareOptions;
     assertFunction(onError, "onError");
     const insertEntry = (entry)=>{
@@ -52040,6 +52105,7 @@ var createListenerMiddleware = (middlewareOptions = {})=>{
         const autoJoinPromises = [];
         try {
             entry.pending.add(internalTaskController);
+            trackExecutingListener(entry);
             await Promise.resolve(entry.effect(action, // Use assign() rather than ... to avoid extra helper functions added to bundle
             assign({}, api, {
                 getOriginalState,
@@ -52057,13 +52123,13 @@ var createListenerMiddleware = (middlewareOptions = {})=>{
                 cancelActiveListeners: ()=>{
                     entry.pending.forEach((controller, _, set)=>{
                         if (controller !== internalTaskController) {
-                            abortControllerWithReason(controller, listenerCancelled);
+                            controller.abort(listenerCancelled);
                             set.delete(controller);
                         }
                     });
                 },
                 cancel: ()=>{
-                    abortControllerWithReason(internalTaskController, listenerCancelled);
+                    internalTaskController.abort(listenerCancelled);
                     entry.pending.delete(internalTaskController);
                 },
                 throwIfCancelled: ()=>{
@@ -52076,11 +52142,12 @@ var createListenerMiddleware = (middlewareOptions = {})=>{
             });
         } finally{
             await Promise.all(autoJoinPromises);
-            abortControllerWithReason(internalTaskController, listenerCompleted);
+            internalTaskController.abort(listenerCompleted);
+            untrackExecutingListener(entry);
             entry.pending.delete(internalTaskController);
         }
     };
-    const clearListenerMiddleware = createClearListenerMiddleware(listenerMap);
+    const clearListenerMiddleware = createClearListenerMiddleware(listenerMap, executingListeners);
     const middleware = (api)=>(next)=>(action)=>{
                 if (!(0, _redux.isAction)(action)) return next(action);
                 if (addListener.match(action)) return startListening(action.payload);
@@ -52126,6 +52193,7 @@ var createListenerMiddleware = (middlewareOptions = {})=>{
         clearListeners: clearListenerMiddleware
     };
 };
+// src/dynamicMiddleware/index.ts
 var createMiddlewareEntry = (middleware)=>({
         middleware,
         applied: /* @__PURE__ */ new Map()
@@ -52559,6 +52627,7 @@ parcelHelpers.export(exports, "castDraft", ()=>castDraft);
 parcelHelpers.export(exports, "castImmutable", ()=>castImmutable);
 parcelHelpers.export(exports, "createDraft", ()=>createDraft);
 parcelHelpers.export(exports, "current", ()=>current);
+parcelHelpers.export(exports, "enableArrayMethods", ()=>enableArrayMethods);
 parcelHelpers.export(exports, "enableMapSet", ()=>enableMapSet);
 parcelHelpers.export(exports, "enablePatches", ()=>enablePatches);
 parcelHelpers.export(exports, "finishDraft", ()=>finishDraft);
@@ -52571,6 +52640,7 @@ parcelHelpers.export(exports, "original", ()=>original);
 parcelHelpers.export(exports, "produce", ()=>produce);
 parcelHelpers.export(exports, "produceWithPatches", ()=>produceWithPatches);
 parcelHelpers.export(exports, "setAutoFreeze", ()=>setAutoFreeze);
+parcelHelpers.export(exports, "setUseStrictIteration", ()=>setUseStrictIteration);
 parcelHelpers.export(exports, "setUseStrictShallowCopy", ()=>setUseStrictShallowCopy);
 var __defProp = Object.defineProperty;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
@@ -52626,156 +52696,180 @@ var errors = [
 function die(error, ...args) {
     {
         const e = errors[error];
-        const msg = typeof e === "function" ? e.apply(null, args) : e;
+        const msg = isFunction(e) ? e.apply(null, args) : e;
         throw new Error(`[Immer] ${msg}`);
     }
     throw new Error(`[Immer] minified error nr: ${error}. Full error at: https://bit.ly/3cXEKWf`);
 }
 // src/utils/common.ts
-var getPrototypeOf = Object.getPrototypeOf;
-function isDraft(value) {
-    return !!value && !!value[DRAFT_STATE];
-}
+var O = Object;
+var getPrototypeOf = O.getPrototypeOf;
+var CONSTRUCTOR = "constructor";
+var PROTOTYPE = "prototype";
+var CONFIGURABLE = "configurable";
+var ENUMERABLE = "enumerable";
+var WRITABLE = "writable";
+var VALUE = "value";
+var isDraft = (value)=>!!value && !!value[DRAFT_STATE];
 function isDraftable(value) {
     var _a;
     if (!value) return false;
-    return isPlainObject(value) || Array.isArray(value) || !!value[DRAFTABLE] || !!((_a = value.constructor) == null ? void 0 : _a[DRAFTABLE]) || isMap(value) || isSet(value);
+    return isPlainObject(value) || isArray(value) || !!value[DRAFTABLE] || !!((_a = value[CONSTRUCTOR]) == null ? void 0 : _a[DRAFTABLE]) || isMap(value) || isSet(value);
 }
-var objectCtorString = Object.prototype.constructor.toString();
+var objectCtorString = O[PROTOTYPE][CONSTRUCTOR].toString();
+var cachedCtorStrings = /* @__PURE__ */ new WeakMap();
 function isPlainObject(value) {
-    if (!value || typeof value !== "object") return false;
+    if (!value || !isObjectish(value)) return false;
     const proto = getPrototypeOf(value);
-    if (proto === null) return true;
-    const Ctor = Object.hasOwnProperty.call(proto, "constructor") && proto.constructor;
+    if (proto === null || proto === O[PROTOTYPE]) return true;
+    const Ctor = O.hasOwnProperty.call(proto, CONSTRUCTOR) && proto[CONSTRUCTOR];
     if (Ctor === Object) return true;
-    return typeof Ctor == "function" && Function.toString.call(Ctor) === objectCtorString;
+    if (!isFunction(Ctor)) return false;
+    let ctorString = cachedCtorStrings.get(Ctor);
+    if (ctorString === void 0) {
+        ctorString = Function.toString.call(Ctor);
+        cachedCtorStrings.set(Ctor, ctorString);
+    }
+    return ctorString === objectCtorString;
 }
 function original(value) {
     if (!isDraft(value)) die(15, value);
     return value[DRAFT_STATE].base_;
 }
-function each(obj, iter) {
-    if (getArchtype(obj) === 0 /* Object */ ) Reflect.ownKeys(obj).forEach((key)=>{
-        iter(key, obj[key], obj);
-    });
-    else obj.forEach((entry, index)=>iter(index, entry, obj));
+function each(obj, iter, strict = true) {
+    if (getArchtype(obj) === 0 /* Object */ ) {
+        const keys = strict ? Reflect.ownKeys(obj) : O.keys(obj);
+        keys.forEach((key)=>{
+            iter(key, obj[key], obj);
+        });
+    } else obj.forEach((entry, index)=>iter(index, entry, obj));
 }
 function getArchtype(thing) {
     const state = thing[DRAFT_STATE];
-    return state ? state.type_ : Array.isArray(thing) ? 1 /* Array */  : isMap(thing) ? 2 /* Map */  : isSet(thing) ? 3 /* Set */  : 0 /* Object */ ;
+    return state ? state.type_ : isArray(thing) ? 1 /* Array */  : isMap(thing) ? 2 /* Map */  : isSet(thing) ? 3 /* Set */  : 0 /* Object */ ;
 }
-function has(thing, prop) {
-    return getArchtype(thing) === 2 /* Map */  ? thing.has(prop) : Object.prototype.hasOwnProperty.call(thing, prop);
-}
-function get(thing, prop) {
-    return getArchtype(thing) === 2 /* Map */  ? thing.get(prop) : thing[prop];
-}
-function set(thing, propOrOldValue, value) {
-    const t = getArchtype(thing);
-    if (t === 2 /* Map */ ) thing.set(propOrOldValue, value);
-    else if (t === 3 /* Set */ ) thing.add(value);
+var has = (thing, prop, type = getArchtype(thing))=>type === 2 /* Map */  ? thing.has(prop) : O[PROTOTYPE].hasOwnProperty.call(thing, prop);
+var get = (thing, prop, type = getArchtype(thing))=>// @ts-ignore
+    type === 2 /* Map */  ? thing.get(prop) : thing[prop];
+var set = (thing, propOrOldValue, value, type = getArchtype(thing))=>{
+    if (type === 2 /* Map */ ) thing.set(propOrOldValue, value);
+    else if (type === 3 /* Set */ ) thing.add(value);
     else thing[propOrOldValue] = value;
-}
+};
 function is(x, y) {
     if (x === y) return x !== 0 || 1 / x === 1 / y;
     else return x !== x && y !== y;
 }
-function isMap(target) {
-    return target instanceof Map;
+var isArray = Array.isArray;
+var isMap = (target)=>target instanceof Map;
+var isSet = (target)=>target instanceof Set;
+var isObjectish = (target)=>typeof target === "object";
+var isFunction = (target)=>typeof target === "function";
+var isBoolean = (target)=>typeof target === "boolean";
+function isArrayIndex(value) {
+    const n = +value;
+    return Number.isInteger(n) && String(n) === value;
 }
-function isSet(target) {
-    return target instanceof Set;
-}
-function latest(state) {
-    return state.copy_ || state.base_;
-}
+var getProxyDraft = (value)=>{
+    if (!isObjectish(value)) return null;
+    return value == null ? void 0 : value[DRAFT_STATE];
+};
+var latest = (state)=>state.copy_ || state.base_;
+var getValue = (value)=>{
+    var _a;
+    const proxyDraft = getProxyDraft(value);
+    return proxyDraft ? (_a = proxyDraft.copy_) != null ? _a : proxyDraft.base_ : value;
+};
+var getFinalValue = (state)=>state.modified_ ? state.copy_ : state.base_;
 function shallowCopy(base, strict) {
     if (isMap(base)) return new Map(base);
     if (isSet(base)) return new Set(base);
-    if (Array.isArray(base)) return Array.prototype.slice.call(base);
+    if (isArray(base)) return Array[PROTOTYPE].slice.call(base);
     const isPlain = isPlainObject(base);
     if (strict === true || strict === "class_only" && !isPlain) {
-        const descriptors = Object.getOwnPropertyDescriptors(base);
+        const descriptors = O.getOwnPropertyDescriptors(base);
         delete descriptors[DRAFT_STATE];
         let keys = Reflect.ownKeys(descriptors);
         for(let i = 0; i < keys.length; i++){
             const key = keys[i];
             const desc = descriptors[key];
-            if (desc.writable === false) {
-                desc.writable = true;
-                desc.configurable = true;
+            if (desc[WRITABLE] === false) {
+                desc[WRITABLE] = true;
+                desc[CONFIGURABLE] = true;
             }
             if (desc.get || desc.set) descriptors[key] = {
-                configurable: true,
-                writable: true,
+                [CONFIGURABLE]: true,
+                [WRITABLE]: true,
                 // could live with !!desc.set as well here...
-                enumerable: desc.enumerable,
-                value: base[key]
+                [ENUMERABLE]: desc[ENUMERABLE],
+                [VALUE]: base[key]
             };
         }
-        return Object.create(getPrototypeOf(base), descriptors);
+        return O.create(getPrototypeOf(base), descriptors);
     } else {
         const proto = getPrototypeOf(base);
         if (proto !== null && isPlain) return __spreadValues({}, base);
-        const obj = Object.create(proto);
-        return Object.assign(obj, base);
+        const obj = O.create(proto);
+        return O.assign(obj, base);
     }
 }
 function freeze(obj, deep = false) {
     if (isFrozen(obj) || isDraft(obj) || !isDraftable(obj)) return obj;
-    if (getArchtype(obj) > 1) Object.defineProperties(obj, {
-        set: {
-            value: dontMutateFrozenCollections
-        },
-        add: {
-            value: dontMutateFrozenCollections
-        },
-        clear: {
-            value: dontMutateFrozenCollections
-        },
-        delete: {
-            value: dontMutateFrozenCollections
-        }
+    if (getArchtype(obj) > 1) O.defineProperties(obj, {
+        set: dontMutateMethodOverride,
+        add: dontMutateMethodOverride,
+        clear: dontMutateMethodOverride,
+        delete: dontMutateMethodOverride
     });
-    Object.freeze(obj);
-    if (deep) Object.values(obj).forEach((value)=>freeze(value, true));
+    O.freeze(obj);
+    if (deep) each(obj, (_key, value)=>{
+        freeze(value, true);
+    }, false);
     return obj;
 }
 function dontMutateFrozenCollections() {
     die(2);
 }
+var dontMutateMethodOverride = {
+    [VALUE]: dontMutateFrozenCollections
+};
 function isFrozen(obj) {
-    return Object.isFrozen(obj);
+    if (obj === null || !isObjectish(obj)) return true;
+    return O.isFrozen(obj);
 }
 // src/utils/plugins.ts
+var PluginMapSet = "MapSet";
+var PluginPatches = "Patches";
+var PluginArrayMethods = "ArrayMethods";
 var plugins = {};
 function getPlugin(pluginKey) {
     const plugin = plugins[pluginKey];
     if (!plugin) die(0, pluginKey);
     return plugin;
 }
+var isPluginLoaded = (pluginKey)=>!!plugins[pluginKey];
 function loadPlugin(pluginKey, implementation) {
     if (!plugins[pluginKey]) plugins[pluginKey] = implementation;
 }
 // src/core/scope.ts
 var currentScope;
-function getCurrentScope() {
-    return currentScope;
-}
-function createScope(parent_, immer_) {
-    return {
+var getCurrentScope = ()=>currentScope;
+var createScope = (parent_, immer_)=>({
         drafts_: [],
         parent_,
         immer_,
         // Whenever the modified draft contains a draft from another scope, we
         // need to prevent auto-freezing so the unowned draft can be finalized.
         canAutoFreeze_: true,
-        unfinalizedDrafts_: 0
-    };
-}
+        unfinalizedDrafts_: 0,
+        handledSet_: /* @__PURE__ */ new Set(),
+        processedForPatches_: /* @__PURE__ */ new Set(),
+        mapSetPlugin_: isPluginLoaded(PluginMapSet) ? getPlugin(PluginMapSet) : void 0,
+        arrayMethodsPlugin_: isPluginLoaded(PluginArrayMethods) ? getPlugin(PluginArrayMethods) : void 0
+    });
 function usePatchesInScope(scope, patchListener) {
     if (patchListener) {
-        getPlugin("Patches");
+        scope.patchPlugin_ = getPlugin(PluginPatches);
         scope.patches_ = [];
         scope.inversePatches_ = [];
         scope.patchListener_ = patchListener;
@@ -52789,9 +52883,7 @@ function revokeScope(scope) {
 function leaveScope(scope) {
     if (scope === currentScope) currentScope = scope.parent_;
 }
-function enterScope(immer2) {
-    return currentScope = createScope(currentScope, immer2);
-}
+var enterScope = (immer2)=>currentScope = createScope(currentScope, immer2);
 function revokeDraft(draft) {
     const state = draft[DRAFT_STATE];
     if (state.type_ === 0 /* Object */  || state.type_ === 1 /* Array */ ) state.revoke_();
@@ -52807,69 +52899,132 @@ function processResult(result, scope) {
             revokeScope(scope);
             die(4);
         }
-        if (isDraftable(result)) {
-            result = finalize(scope, result);
-            if (!scope.parent_) maybeFreeze(scope, result);
-        }
-        if (scope.patches_) getPlugin("Patches").generateReplacementPatches_(baseDraft[DRAFT_STATE].base_, result, scope.patches_, scope.inversePatches_);
-    } else result = finalize(scope, baseDraft, []);
+        if (isDraftable(result)) result = finalize(scope, result);
+        const { patchPlugin_ } = scope;
+        if (patchPlugin_) patchPlugin_.generateReplacementPatches_(baseDraft[DRAFT_STATE].base_, result, scope);
+    } else result = finalize(scope, baseDraft);
+    maybeFreeze(scope, result, true);
     revokeScope(scope);
     if (scope.patches_) scope.patchListener_(scope.patches_, scope.inversePatches_);
     return result !== NOTHING ? result : void 0;
 }
-function finalize(rootScope, value, path) {
+function finalize(rootScope, value) {
     if (isFrozen(value)) return value;
     const state = value[DRAFT_STATE];
     if (!state) {
-        each(value, (key, childValue)=>finalizeProperty(rootScope, state, value, key, childValue, path));
-        return value;
+        const finalValue = handleValue(value, rootScope.handledSet_, rootScope);
+        return finalValue;
     }
-    if (state.scope_ !== rootScope) return value;
-    if (!state.modified_) {
-        maybeFreeze(rootScope, state.base_, true);
-        return state.base_;
-    }
+    if (!isSameScope(state, rootScope)) return value;
+    if (!state.modified_) return state.base_;
     if (!state.finalized_) {
-        state.finalized_ = true;
-        state.scope_.unfinalizedDrafts_--;
-        const result = state.copy_;
-        let resultEach = result;
-        let isSet2 = false;
-        if (state.type_ === 3 /* Set */ ) {
-            resultEach = new Set(result);
-            result.clear();
-            isSet2 = true;
+        const { callbacks_ } = state;
+        if (callbacks_) while(callbacks_.length > 0){
+            const callback = callbacks_.pop();
+            callback(rootScope);
         }
-        each(resultEach, (key, childValue)=>finalizeProperty(rootScope, state, result, key, childValue, path, isSet2));
-        maybeFreeze(rootScope, result, false);
-        if (path && rootScope.patches_) getPlugin("Patches").generatePatches_(state, path, rootScope.patches_, rootScope.inversePatches_);
+        generatePatchesAndFinalize(state, rootScope);
     }
     return state.copy_;
-}
-function finalizeProperty(rootScope, parentState, targetObject, prop, childValue, rootPath, targetIsSet) {
-    if (childValue === targetObject) die(5);
-    if (isDraft(childValue)) {
-        const path = rootPath && parentState && parentState.type_ !== 3 /* Set */  && // Set objects are atomic since they have no keys.
-        !has(parentState.assigned_, prop) ? rootPath.concat(prop) : void 0;
-        const res = finalize(rootScope, childValue, path);
-        set(targetObject, prop, res);
-        if (isDraft(res)) rootScope.canAutoFreeze_ = false;
-        else return;
-    } else if (targetIsSet) targetObject.add(childValue);
-    if (isDraftable(childValue) && !isFrozen(childValue)) {
-        if (!rootScope.immer_.autoFreeze_ && rootScope.unfinalizedDrafts_ < 1) return;
-        finalize(rootScope, childValue);
-        if ((!parentState || !parentState.scope_.parent_) && typeof prop !== "symbol" && (isMap(targetObject) ? targetObject.has(prop) : Object.prototype.propertyIsEnumerable.call(targetObject, prop))) maybeFreeze(rootScope, childValue);
-    }
 }
 function maybeFreeze(scope, value, deep = false) {
     if (!scope.parent_ && scope.immer_.autoFreeze_ && scope.canAutoFreeze_) freeze(value, deep);
 }
+function markStateFinalized(state) {
+    state.finalized_ = true;
+    state.scope_.unfinalizedDrafts_--;
+}
+var isSameScope = (state, rootScope)=>state.scope_ === rootScope;
+var EMPTY_LOCATIONS_RESULT = [];
+function updateDraftInParent(parent, draftValue, finalizedValue, originalKey) {
+    var _a;
+    const parentCopy = latest(parent);
+    const parentType = parent.type_;
+    if (originalKey !== void 0) {
+        const currentValue = get(parentCopy, originalKey, parentType);
+        if (currentValue === draftValue) {
+            set(parentCopy, originalKey, finalizedValue, parentType);
+            return;
+        }
+    }
+    if (!parent.draftLocations_) {
+        const draftLocations = parent.draftLocations_ = /* @__PURE__ */ new Map();
+        each(parentCopy, (key, value)=>{
+            if (isDraft(value)) {
+                const keys = draftLocations.get(value) || [];
+                keys.push(key);
+                draftLocations.set(value, keys);
+            }
+        });
+    }
+    const locations = (_a = parent.draftLocations_.get(draftValue)) != null ? _a : EMPTY_LOCATIONS_RESULT;
+    for (const location of locations)set(parentCopy, location, finalizedValue, parentType);
+}
+function registerChildFinalizationCallback(parent, child, key) {
+    parent.callbacks_.push(function childCleanup(rootScope) {
+        var _a, _b;
+        const state = child;
+        if (!state || !isSameScope(state, rootScope)) return;
+        (_a = rootScope.mapSetPlugin_) == null || _a.fixSetContents(state);
+        const finalizedValue = getFinalValue(state);
+        updateDraftInParent(parent, (_b = state.draft_) != null ? _b : state, finalizedValue, key);
+        generatePatchesAndFinalize(state, rootScope);
+    });
+}
+function generatePatchesAndFinalize(state, rootScope) {
+    var _a, _b;
+    const shouldFinalize = state.modified_ && !state.finalized_ && (state.type_ === 3 /* Set */  || state.type_ === 1 /* Array */  && state.allIndicesReassigned_ || ((_b = (_a = state.assigned_) == null ? void 0 : _a.size) != null ? _b : 0) > 0);
+    if (shouldFinalize) {
+        const { patchPlugin_ } = rootScope;
+        if (patchPlugin_) {
+            const basePath = patchPlugin_.getPath(state);
+            if (basePath) patchPlugin_.generatePatches_(state, basePath, rootScope);
+        }
+        markStateFinalized(state);
+    }
+}
+function handleCrossReference(target, key, value) {
+    const { scope_ } = target;
+    if (isDraft(value)) {
+        const state = value[DRAFT_STATE];
+        if (isSameScope(state, scope_)) state.callbacks_.push(function crossReferenceCleanup() {
+            prepareCopy(target);
+            const finalizedValue = getFinalValue(state);
+            updateDraftInParent(target, value, finalizedValue, key);
+        });
+    } else if (isDraftable(value)) target.callbacks_.push(function nestedDraftCleanup() {
+        var _a;
+        const targetCopy = latest(target);
+        if (target.type_ === 3 /* Set */ ) {
+            if (targetCopy.has(value)) handleValue(value, scope_.handledSet_, scope_);
+        } else {
+            if (get(targetCopy, key, target.type_) === value) {
+                if (scope_.drafts_.length > 1 && ((_a = target.assigned_.get(key)) != null ? _a : false) === true && target.copy_) handleValue(get(target.copy_, key, target.type_), scope_.handledSet_, scope_);
+            }
+        }
+    });
+}
+function handleValue(target, handledSet, rootScope) {
+    if (!rootScope.immer_.autoFreeze_ && rootScope.unfinalizedDrafts_ < 1) return target;
+    if (isDraft(target) || handledSet.has(target) || !isDraftable(target) || isFrozen(target)) return target;
+    handledSet.add(target);
+    each(target, (key, value)=>{
+        if (isDraft(value)) {
+            const state = value[DRAFT_STATE];
+            if (isSameScope(state, rootScope)) {
+                const updatedValue = getFinalValue(state);
+                set(target, key, updatedValue, target.type_);
+                markStateFinalized(state);
+            }
+        } else if (isDraftable(value)) handleValue(value, handledSet, rootScope);
+    });
+    return target;
+}
 // src/core/proxy.ts
 function createProxyProxy(base, parent) {
-    const isArray = Array.isArray(base);
+    const baseIsArray = isArray(base);
     const state = {
-        type_: isArray ? 1 /* Array */  : 0 /* Object */ ,
+        type_: baseIsArray ? 1 /* Array */  : 0 /* Object */ ,
         // Track which produce call this is associated with.
         scope_: parent ? parent.scope_ : getCurrentScope(),
         // True for both shallow and deep changes.
@@ -52877,7 +53032,8 @@ function createProxyProxy(base, parent) {
         // Used during finalization.
         finalized_: false,
         // Track which properties have been assigned (true) or deleted (false).
-        assigned_: {},
+        // actually instantiated in `prepareCopy()`
+        assigned_: void 0,
         // The parent draft state.
         parent_: parent,
         // The base state.
@@ -52889,11 +53045,13 @@ function createProxyProxy(base, parent) {
         copy_: null,
         // Called by the `produce` function.
         revoke_: null,
-        isManual_: false
+        isManual_: false,
+        // `callbacks` actually gets assigned in `createProxy`
+        callbacks_: void 0
     };
     let target = state;
     let traps = objectTraps;
-    if (isArray) {
+    if (baseIsArray) {
         target = [
             state
         ];
@@ -52902,18 +53060,29 @@ function createProxyProxy(base, parent) {
     const { revoke, proxy } = Proxy.revocable(target, traps);
     state.draft_ = proxy;
     state.revoke_ = revoke;
-    return proxy;
+    return [
+        proxy,
+        state
+    ];
 }
 var objectTraps = {
     get (state, prop) {
         if (prop === DRAFT_STATE) return state;
+        let arrayPlugin = state.scope_.arrayMethodsPlugin_;
+        const isArrayWithStringProp = state.type_ === 1 /* Array */  && typeof prop === "string";
+        if (isArrayWithStringProp) {
+            if (arrayPlugin == null ? void 0 : arrayPlugin.isArrayOperationMethod(prop)) return arrayPlugin.createMethodInterceptor(state, prop);
+        }
         const source = latest(state);
-        if (!has(source, prop)) return readPropFromProto(state, source, prop);
+        if (!has(source, prop, state.type_)) return readPropFromProto(state, source, prop);
         const value = source[prop];
         if (state.finalized_ || !isDraftable(value)) return value;
+        if (isArrayWithStringProp && state.operationMethod && (arrayPlugin == null ? void 0 : arrayPlugin.isMutatingArrayMethod(state.operationMethod)) && isArrayIndex(prop)) return value;
         if (value === peek(state.base_, prop)) {
             prepareCopy(state);
-            return state.copy_[prop] = createProxy(value, state);
+            const childKey = state.type_ === 1 /* Array */  ? +prop : prop;
+            const childDraft = createProxy(state.scope_, value, state, childKey);
+            return state.copy_[childKey] = childDraft;
         }
         return value;
     },
@@ -52934,10 +53103,10 @@ var objectTraps = {
             const currentState = current2 == null ? void 0 : current2[DRAFT_STATE];
             if (currentState && currentState.base_ === value) {
                 state.copy_[prop] = value;
-                state.assigned_[prop] = false;
+                state.assigned_.set(prop, false);
                 return true;
             }
-            if (is(value, current2) && (value !== void 0 || has(state.base_, prop))) return true;
+            if (is(value, current2) && (value !== void 0 || has(state.base_, prop, state.type_))) return true;
             prepareCopy(state);
             markChanged(state);
         }
@@ -52945,15 +53114,16 @@ var objectTraps = {
         (value !== void 0 || prop in state.copy_) || // special case: NaN
         Number.isNaN(value) && Number.isNaN(state.copy_[prop])) return true;
         state.copy_[prop] = value;
-        state.assigned_[prop] = true;
+        state.assigned_.set(prop, true);
+        handleCrossReference(state, prop, value);
         return true;
     },
     deleteProperty (state, prop) {
+        prepareCopy(state);
         if (peek(state.base_, prop) !== void 0 || prop in state.base_) {
-            state.assigned_[prop] = false;
-            prepareCopy(state);
+            state.assigned_.set(prop, false);
             markChanged(state);
-        } else delete state.assigned_[prop];
+        } else state.assigned_.delete(prop);
         if (state.copy_) delete state.copy_[prop];
         return true;
     },
@@ -52964,10 +53134,10 @@ var objectTraps = {
         const desc = Reflect.getOwnPropertyDescriptor(owner, prop);
         if (!desc) return desc;
         return {
-            writable: true,
-            configurable: state.type_ !== 1 /* Array */  || prop !== "length",
-            enumerable: desc.enumerable,
-            value: owner[prop]
+            [WRITABLE]: true,
+            [CONFIGURABLE]: state.type_ !== 1 /* Array */  || prop !== "length",
+            [ENUMERABLE]: desc[ENUMERABLE],
+            [VALUE]: owner[prop]
         };
     },
     defineProperty () {
@@ -52981,12 +53151,14 @@ var objectTraps = {
     }
 };
 var arrayTraps = {};
-each(objectTraps, (key, fn)=>{
+for(let key in objectTraps){
+    let fn = objectTraps[key];
     arrayTraps[key] = function() {
-        arguments[0] = arguments[0][0];
-        return fn.apply(this, arguments);
+        const args = arguments;
+        args[0] = args[0][0];
+        return fn.apply(this, args);
     };
-});
+}
 arrayTraps.deleteProperty = function(state, prop) {
     if (isNaN(parseInt(prop))) die(13);
     return arrayTraps.set.call(this, state, prop, void 0);
@@ -53003,7 +53175,7 @@ function peek(draft, prop) {
 function readPropFromProto(state, source, prop) {
     var _a;
     const desc = getDescriptorFromProto(source, prop);
-    return desc ? `value` in desc ? desc.value : // This is a very special case, if the prop is a getter defined by the
+    return desc ? VALUE in desc ? desc[VALUE] : // This is a very special case, if the prop is a getter defined by the
     // prototype, we should invoke it with the draft as context!
     (_a = desc.get) == null ? void 0 : _a.call(state.draft_) : void 0;
 }
@@ -53024,13 +53196,17 @@ function markChanged(state) {
     }
 }
 function prepareCopy(state) {
-    if (!state.copy_) state.copy_ = shallowCopy(state.base_, state.scope_.immer_.useStrictShallowCopy_);
+    if (!state.copy_) {
+        state.assigned_ = /* @__PURE__ */ new Map();
+        state.copy_ = shallowCopy(state.base_, state.scope_.immer_.useStrictShallowCopy_);
+    }
 }
 // src/core/immerClass.ts
 var Immer2 = class {
     constructor(config){
         this.autoFreeze_ = true;
         this.useStrictShallowCopy_ = false;
+        this.useStrictIteration_ = false;
         /**
      * The `produce` function takes a value and a "recipe function" (whose
      * return value often depends on the base state). The recipe function is
@@ -53050,7 +53226,7 @@ var Immer2 = class {
      * @param {Function} patchListener - optional function that will be called with all the patches produced here
      * @returns {any} a new state, or the initial state if nothing was modified
      */ this.produce = (base, recipe, patchListener)=>{
-            if (typeof base === "function" && typeof recipe !== "function") {
+            if (isFunction(base) && !isFunction(recipe)) {
                 const defaultBase = recipe;
                 recipe = base;
                 const self = this;
@@ -53058,12 +53234,12 @@ var Immer2 = class {
                     return self.produce(base2, (draft)=>recipe.call(this, draft, ...args));
                 };
             }
-            if (typeof recipe !== "function") die(6);
-            if (patchListener !== void 0 && typeof patchListener !== "function") die(7);
+            if (!isFunction(recipe)) die(6);
+            if (patchListener !== void 0 && !isFunction(patchListener)) die(7);
             let result;
             if (isDraftable(base)) {
                 const scope = enterScope(this);
-                const proxy = createProxy(base, void 0);
+                const proxy = createProxy(scope, base, void 0);
                 let hasError = true;
                 try {
                     result = recipe(proxy);
@@ -53074,7 +53250,7 @@ var Immer2 = class {
                 }
                 usePatchesInScope(scope, patchListener);
                 return processResult(result, scope);
-            } else if (!base || typeof base !== "object") {
+            } else if (!base || !isObjectish(base)) {
                 result = recipe(base);
                 if (result === void 0) result = base;
                 if (result === NOTHING) result = void 0;
@@ -53082,14 +53258,17 @@ var Immer2 = class {
                 if (patchListener) {
                     const p = [];
                     const ip = [];
-                    getPlugin("Patches").generateReplacementPatches_(base, result, p, ip);
+                    getPlugin(PluginPatches).generateReplacementPatches_(base, result, {
+                        patches_: p,
+                        inversePatches_: ip
+                    });
                     patchListener(p, ip);
                 }
                 return result;
             } else die(1, base);
         };
         this.produceWithPatches = (base, recipe)=>{
-            if (typeof base === "function") return (state, ...args)=>this.produceWithPatches(state, (draft)=>base(draft, ...args));
+            if (isFunction(base)) return (state, ...args)=>this.produceWithPatches(state, (draft)=>base(draft, ...args));
             let patches, inversePatches;
             const result = this.produce(base, recipe, (p, ip)=>{
                 patches = p;
@@ -53101,14 +53280,15 @@ var Immer2 = class {
                 inversePatches
             ];
         };
-        if (typeof (config == null ? void 0 : config.autoFreeze) === "boolean") this.setAutoFreeze(config.autoFreeze);
-        if (typeof (config == null ? void 0 : config.useStrictShallowCopy) === "boolean") this.setUseStrictShallowCopy(config.useStrictShallowCopy);
+        if (isBoolean(config == null ? void 0 : config.autoFreeze)) this.setAutoFreeze(config.autoFreeze);
+        if (isBoolean(config == null ? void 0 : config.useStrictShallowCopy)) this.setUseStrictShallowCopy(config.useStrictShallowCopy);
+        if (isBoolean(config == null ? void 0 : config.useStrictIteration)) this.setUseStrictIteration(config.useStrictIteration);
     }
     createDraft(base) {
         if (!isDraftable(base)) die(8);
         if (isDraft(base)) base = current(base);
         const scope = enterScope(this);
-        const proxy = createProxy(base, void 0);
+        const proxy = createProxy(scope, base, void 0);
         proxy[DRAFT_STATE].isManual_ = true;
         leaveScope(scope);
         return proxy;
@@ -53134,6 +53314,17 @@ var Immer2 = class {
    */ setUseStrictShallowCopy(value) {
         this.useStrictShallowCopy_ = value;
     }
+    /**
+   * Pass false to use faster iteration that skips non-enumerable properties
+   * but still handles symbols for compatibility.
+   *
+   * By default, strict iteration is enabled (includes all own properties).
+   */ setUseStrictIteration(value) {
+        this.useStrictIteration_ = value;
+    }
+    shouldUseStrictIteration() {
+        return this.useStrictIteration_;
+    }
     applyPatches(base, patches) {
         let i;
         for(i = patches.length - 1; i >= 0; i--){
@@ -53144,15 +53335,25 @@ var Immer2 = class {
             }
         }
         if (i > -1) patches = patches.slice(i + 1);
-        const applyPatchesImpl = getPlugin("Patches").applyPatches_;
+        const applyPatchesImpl = getPlugin(PluginPatches).applyPatches_;
         if (isDraft(base)) return applyPatchesImpl(base, patches);
         return this.produce(base, (draft)=>applyPatchesImpl(draft, patches));
     }
 };
-function createProxy(value, parent) {
-    const draft = isMap(value) ? getPlugin("MapSet").proxyMap_(value, parent) : isSet(value) ? getPlugin("MapSet").proxySet_(value, parent) : createProxyProxy(value, parent);
-    const scope = parent ? parent.scope_ : getCurrentScope();
+function createProxy(rootScope, value, parent, key) {
+    var _a, _b;
+    const [draft, state] = isMap(value) ? getPlugin(PluginMapSet).proxyMap_(value, parent) : isSet(value) ? getPlugin(PluginMapSet).proxySet_(value, parent) : createProxyProxy(value, parent);
+    const scope = (_a = parent == null ? void 0 : parent.scope_) != null ? _a : getCurrentScope();
     scope.drafts_.push(draft);
+    state.callbacks_ = (_b = parent == null ? void 0 : parent.callbacks_) != null ? _b : [];
+    state.key_ = key;
+    if (parent && key !== void 0) registerChildFinalizationCallback(parent, state, key);
+    else state.callbacks_.push(function rootDraftCleanup(rootScope2) {
+        var _a2;
+        (_a2 = rootScope2.mapSetPlugin_) == null || _a2.fixSetContents(state);
+        const { patchPlugin_ } = rootScope2;
+        if (state.modified_ && patchPlugin_) patchPlugin_.generatePatches_(state, [], rootScope2);
+    });
     return draft;
 }
 // src/core/current.ts
@@ -53164,14 +53365,16 @@ function currentImpl(value) {
     if (!isDraftable(value) || isFrozen(value)) return value;
     const state = value[DRAFT_STATE];
     let copy;
+    let strict = true;
     if (state) {
         if (!state.modified_) return state.base_;
         state.finalized_ = true;
         copy = shallowCopy(value, state.scope_.immer_.useStrictShallowCopy_);
+        strict = state.scope_.immer_.shouldUseStrictIteration();
     } else copy = shallowCopy(value, true);
     each(copy, (key, childValue)=>{
         set(copy, key, currentImpl(childValue));
-    });
+    }, strict);
     if (state) state.finalized_ = false;
     return copy;
 }
@@ -53183,18 +53386,57 @@ function enablePatches() {
     }, function(path) {
         return "Cannot apply patch, path doesn't resolve: " + path;
     }, "Patching reserved attributes like __proto__, prototype and constructor is not allowed");
+    function getPath(state, path = []) {
+        var _a;
+        if (state.key_ !== void 0) {
+            const parentCopy = (_a = state.parent_.copy_) != null ? _a : state.parent_.base_;
+            const proxyDraft = getProxyDraft(get(parentCopy, state.key_));
+            const valueAtKey = get(parentCopy, state.key_);
+            if (valueAtKey === void 0) return null;
+            if (valueAtKey !== state.draft_ && valueAtKey !== state.base_ && valueAtKey !== state.copy_) return null;
+            if (proxyDraft != null && proxyDraft.base_ !== state.base_) return null;
+            const isSet2 = state.parent_.type_ === 3 /* Set */ ;
+            let key;
+            if (isSet2) {
+                const setParent = state.parent_;
+                key = Array.from(setParent.drafts_.keys()).indexOf(state.key_);
+            } else key = state.key_;
+            if (!(isSet2 && parentCopy.size > key || has(parentCopy, key))) return null;
+            path.push(key);
+        }
+        if (state.parent_) return getPath(state.parent_, path);
+        path.reverse();
+        try {
+            resolvePath(state.copy_, path);
+        } catch (e) {
+            return null;
+        }
+        return path;
+    }
+    function resolvePath(base, path) {
+        let current2 = base;
+        for(let i = 0; i < path.length - 1; i++){
+            const key = path[i];
+            current2 = get(current2, key);
+            if (!isObjectish(current2) || current2 === null) throw new Error(`Cannot resolve path at '${path.join("/")}'`);
+        }
+        return current2;
+    }
     const REPLACE = "replace";
     const ADD = "add";
     const REMOVE = "remove";
-    function generatePatches_(state, basePath, patches, inversePatches) {
+    function generatePatches_(state, basePath, scope) {
+        if (state.scope_.processedForPatches_.has(state)) return;
+        state.scope_.processedForPatches_.add(state);
+        const { patches_, inversePatches_ } = scope;
         switch(state.type_){
             case 0 /* Object */ :
             case 2 /* Map */ :
-                return generatePatchesFromAssigned(state, basePath, patches, inversePatches);
+                return generatePatchesFromAssigned(state, basePath, patches_, inversePatches_);
             case 1 /* Array */ :
-                return generateArrayPatches(state, basePath, patches, inversePatches);
+                return generateArrayPatches(state, basePath, patches_, inversePatches_);
             case 3 /* Set */ :
-                return generateSetPatches(state, basePath, patches, inversePatches);
+                return generateSetPatches(state, basePath, patches_, inversePatches_);
         }
     }
     function generateArrayPatches(state, basePath, patches, inversePatches) {
@@ -53210,22 +53452,30 @@ function enablePatches() {
                 patches
             ];
         }
-        for(let i = 0; i < base_.length; i++)if (assigned_[i] && copy_[i] !== base_[i]) {
-            const path = basePath.concat([
-                i
-            ]);
-            patches.push({
-                op: REPLACE,
-                path,
-                // Need to maybe clone it, as it can in fact be the original value
-                // due to the base/copy inversion at the start of this function
-                value: clonePatchValueIfNeeded(copy_[i])
-            });
-            inversePatches.push({
-                op: REPLACE,
-                path,
-                value: clonePatchValueIfNeeded(base_[i])
-            });
+        const allReassigned = state.allIndicesReassigned_ === true;
+        for(let i = 0; i < base_.length; i++){
+            const copiedItem = copy_[i];
+            const baseItem = base_[i];
+            const isAssigned = allReassigned || (assigned_ == null ? void 0 : assigned_.get(i.toString()));
+            if (isAssigned && copiedItem !== baseItem) {
+                const childState = copiedItem == null ? void 0 : copiedItem[DRAFT_STATE];
+                if (childState && childState.modified_) continue;
+                const path = basePath.concat([
+                    i
+                ]);
+                patches.push({
+                    op: REPLACE,
+                    path,
+                    // Need to maybe clone it, as it can in fact be the original value
+                    // due to the base/copy inversion at the start of this function
+                    value: clonePatchValueIfNeeded(copiedItem)
+                });
+                inversePatches.push({
+                    op: REPLACE,
+                    path,
+                    value: clonePatchValueIfNeeded(baseItem)
+                });
+            }
         }
         for(let i = base_.length; i < copy_.length; i++){
             const path = basePath.concat([
@@ -53250,10 +53500,10 @@ function enablePatches() {
         }
     }
     function generatePatchesFromAssigned(state, basePath, patches, inversePatches) {
-        const { base_, copy_ } = state;
+        const { base_, copy_, type_ } = state;
         each(state.assigned_, (key, assignedValue)=>{
-            const origValue = get(base_, key);
-            const value = get(copy_, key);
+            const origValue = get(base_, key, type_);
+            const value = get(copy_, key, type_);
             const op = !assignedValue ? REMOVE : has(base_, key) ? REPLACE : ADD;
             if (origValue === value && op === REPLACE) return;
             const path = basePath.concat(key);
@@ -53263,7 +53513,7 @@ function enablePatches() {
             } : {
                 op,
                 path,
-                value
+                value: clonePatchValueIfNeeded(value)
             });
             inversePatches.push(op === ADD ? {
                 op: REMOVE,
@@ -53320,13 +53570,14 @@ function enablePatches() {
             i++;
         });
     }
-    function generateReplacementPatches_(baseValue, replacement, patches, inversePatches) {
-        patches.push({
+    function generateReplacementPatches_(baseValue, replacement, scope) {
+        const { patches_, inversePatches_ } = scope;
+        patches_.push({
             op: REPLACE,
             path: [],
             value: replacement === NOTHING ? void 0 : replacement
         });
-        inversePatches.push({
+        inversePatches_.push({
             op: REPLACE,
             path: [],
             value: baseValue
@@ -53340,10 +53591,10 @@ function enablePatches() {
                 const parentType = getArchtype(base);
                 let p = path[i];
                 if (typeof p !== "string" && typeof p !== "number") p = "" + p;
-                if ((parentType === 0 /* Object */  || parentType === 1 /* Array */ ) && (p === "__proto__" || p === "constructor")) die(errorOffset + 3);
-                if (typeof base === "function" && p === "prototype") die(errorOffset + 3);
+                if ((parentType === 0 /* Object */  || parentType === 1 /* Array */ ) && (p === "__proto__" || p === CONSTRUCTOR)) die(errorOffset + 3);
+                if (isFunction(base) && p === PROTOTYPE) die(errorOffset + 3);
                 base = get(base, p);
-                if (typeof base !== "object") die(errorOffset + 2, path.join("/"));
+                if (!isObjectish(base)) die(errorOffset + 2, path.join("/"));
             }
             const type = getArchtype(base);
             const value = deepClonePatchValue(patch.value);
@@ -53388,7 +53639,7 @@ function enablePatches() {
     }
     function deepClonePatchValue(obj) {
         if (!isDraftable(obj)) return obj;
-        if (Array.isArray(obj)) return obj.map(deepClonePatchValue);
+        if (isArray(obj)) return obj.map(deepClonePatchValue);
         if (isMap(obj)) return new Map(Array.from(obj.entries()).map(([k, v])=>[
                 k,
                 deepClonePatchValue(v)
@@ -53403,10 +53654,11 @@ function enablePatches() {
         if (isDraft(obj)) return deepClonePatchValue(obj);
         else return obj;
     }
-    loadPlugin("Patches", {
+    loadPlugin(PluginPatches, {
         applyPatches_,
         generatePatches_,
-        generateReplacementPatches_
+        generateReplacementPatches_,
+        getPath
     });
 }
 // src/plugins/mapset.ts
@@ -53425,7 +53677,8 @@ function enableMapSet() {
                 base_: target,
                 draft_: this,
                 isManual_: false,
-                revoked_: false
+                revoked_: false,
+                callbacks_: []
             };
         }
         get size() {
@@ -53443,6 +53696,7 @@ function enableMapSet() {
                 state.assigned_.set(key, true);
                 state.copy_.set(key, value);
                 state.assigned_.set(key, true);
+                handleCrossReference(state, key, value);
             }
             return this;
         }
@@ -53482,7 +53736,7 @@ function enableMapSet() {
             const value = latest(state).get(key);
             if (state.finalized_ || !isDraftable(value)) return value;
             if (value !== state.base_.get(key)) return value;
-            const draft = createProxy(value, state);
+            const draft = createProxy(state.scope_, value, state, key);
             prepareMapCopy(state);
             state.copy_.set(key, draft);
             return draft;
@@ -53528,7 +53782,11 @@ function enableMapSet() {
         }
     }
     function proxyMap_(target, parent) {
-        return new DraftMap(target, parent);
+        const map = new DraftMap(target, parent);
+        return [
+            map,
+            map[DRAFT_STATE]
+        ];
     }
     function prepareMapCopy(state) {
         if (!state.copy_) {
@@ -53550,7 +53808,9 @@ function enableMapSet() {
                 draft_: this,
                 drafts_: /* @__PURE__ */ new Map(),
                 revoked_: false,
-                isManual_: false
+                isManual_: false,
+                assigned_: void 0,
+                callbacks_: []
             };
         }
         get size() {
@@ -53571,6 +53831,7 @@ function enableMapSet() {
                 prepareSetCopy(state);
                 markChanged(state);
                 state.copy_.add(value);
+                handleCrossReference(state, value, value);
             }
             return this;
         }
@@ -53619,14 +53880,18 @@ function enableMapSet() {
         }
     }
     function proxySet_(target, parent) {
-        return new DraftSet(target, parent);
+        const set2 = new DraftSet(target, parent);
+        return [
+            set2,
+            set2[DRAFT_STATE]
+        ];
     }
     function prepareSetCopy(state) {
         if (!state.copy_) {
             state.copy_ = /* @__PURE__ */ new Set();
             state.base_.forEach((value)=>{
                 if (isDraftable(value)) {
-                    const draft = createProxy(value, state);
+                    const draft = createProxy(state.scope_, value, state, value);
                     state.drafts_.set(value, draft);
                     state.copy_.add(draft);
                 } else state.copy_.add(value);
@@ -53636,9 +53901,161 @@ function enableMapSet() {
     function assertUnrevoked(state) {
         if (state.revoked_) die(3, JSON.stringify(latest(state)));
     }
-    loadPlugin("MapSet", {
+    function fixSetContents(target) {
+        if (target.type_ === 3 /* Set */  && target.copy_) {
+            const copy = new Set(target.copy_);
+            target.copy_.clear();
+            copy.forEach((value)=>{
+                target.copy_.add(getValue(value));
+            });
+        }
+    }
+    loadPlugin(PluginMapSet, {
         proxyMap_,
-        proxySet_
+        proxySet_,
+        fixSetContents
+    });
+}
+// src/plugins/arrayMethods.ts
+function enableArrayMethods() {
+    const SHIFTING_METHODS = /* @__PURE__ */ new Set([
+        "shift",
+        "unshift"
+    ]);
+    const QUEUE_METHODS = /* @__PURE__ */ new Set([
+        "push",
+        "pop"
+    ]);
+    const RESULT_RETURNING_METHODS = /* @__PURE__ */ new Set([
+        ...QUEUE_METHODS,
+        ...SHIFTING_METHODS
+    ]);
+    const REORDERING_METHODS = /* @__PURE__ */ new Set([
+        "reverse",
+        "sort"
+    ]);
+    const MUTATING_METHODS = /* @__PURE__ */ new Set([
+        ...RESULT_RETURNING_METHODS,
+        ...REORDERING_METHODS,
+        "splice"
+    ]);
+    const FIND_METHODS = /* @__PURE__ */ new Set([
+        "find",
+        "findLast"
+    ]);
+    const NON_MUTATING_METHODS = /* @__PURE__ */ new Set([
+        "filter",
+        "slice",
+        "concat",
+        "flat",
+        ...FIND_METHODS,
+        "findIndex",
+        "findLastIndex",
+        "some",
+        "every",
+        "indexOf",
+        "lastIndexOf",
+        "includes",
+        "join",
+        "toString",
+        "toLocaleString"
+    ]);
+    function isMutatingArrayMethod(method) {
+        return MUTATING_METHODS.has(method);
+    }
+    function isNonMutatingArrayMethod(method) {
+        return NON_MUTATING_METHODS.has(method);
+    }
+    function isArrayOperationMethod(method) {
+        return isMutatingArrayMethod(method) || isNonMutatingArrayMethod(method);
+    }
+    function enterOperation(state, method) {
+        state.operationMethod = method;
+    }
+    function exitOperation(state) {
+        state.operationMethod = void 0;
+    }
+    function executeArrayMethod(state, operation, markLength = true) {
+        prepareCopy(state);
+        const result = operation();
+        markChanged(state);
+        if (markLength) state.assigned_.set("length", true);
+        return result;
+    }
+    function markAllIndicesReassigned(state) {
+        state.allIndicesReassigned_ = true;
+    }
+    function normalizeSliceIndex(index, length) {
+        if (index < 0) return Math.max(length + index, 0);
+        return Math.min(index, length);
+    }
+    function handleSimpleOperation(state, method, args) {
+        return executeArrayMethod(state, ()=>{
+            const result = state.copy_[method](...args);
+            if (SHIFTING_METHODS.has(method)) markAllIndicesReassigned(state);
+            return RESULT_RETURNING_METHODS.has(method) ? result : state.draft_;
+        });
+    }
+    function handleReorderingOperation(state, method, args) {
+        return executeArrayMethod(state, ()=>{
+            state.copy_[method](...args);
+            markAllIndicesReassigned(state);
+            return state.draft_;
+        }, false);
+    }
+    function createMethodInterceptor(state, originalMethod) {
+        return function interceptedMethod(...args) {
+            const method = originalMethod;
+            enterOperation(state, method);
+            try {
+                if (isMutatingArrayMethod(method)) {
+                    if (RESULT_RETURNING_METHODS.has(method)) return handleSimpleOperation(state, method, args);
+                    if (REORDERING_METHODS.has(method)) return handleReorderingOperation(state, method, args);
+                    if (method === "splice") {
+                        const res = executeArrayMethod(state, ()=>state.copy_.splice(...args));
+                        markAllIndicesReassigned(state);
+                        return res;
+                    }
+                } else return handleNonMutatingOperation(state, method, args);
+            } finally{
+                exitOperation(state);
+            }
+        };
+    }
+    function handleNonMutatingOperation(state, method, args) {
+        var _a, _b;
+        const source = latest(state);
+        if (method === "filter") {
+            const predicate = args[0];
+            const result = [];
+            for(let i = 0; i < source.length; i++)if (predicate(source[i], i, source)) result.push(state.draft_[i]);
+            return result;
+        }
+        if (FIND_METHODS.has(method)) {
+            const predicate = args[0];
+            const isForward = method === "find";
+            const step = isForward ? 1 : -1;
+            const start = isForward ? 0 : source.length - 1;
+            for(let i = start; i >= 0 && i < source.length; i += step){
+                if (predicate(source[i], i, source)) return state.draft_[i];
+            }
+            return void 0;
+        }
+        if (method === "slice") {
+            const rawStart = (_a = args[0]) != null ? _a : 0;
+            const rawEnd = (_b = args[1]) != null ? _b : source.length;
+            const start = normalizeSliceIndex(rawStart, source.length);
+            const end = normalizeSliceIndex(rawEnd, source.length);
+            const result = [];
+            for(let i = start; i < end; i++)result.push(state.draft_[i]);
+            return result;
+        }
+        return source[method](...args);
+    }
+    loadPlugin(PluginArrayMethods, {
+        createMethodInterceptor,
+        isArrayOperationMethod,
+        isMutatingArrayMethod
     });
 }
 // src/immer.ts
@@ -53647,15 +54064,12 @@ var produce = immer.produce;
 var produceWithPatches = /* @__PURE__ */ immer.produceWithPatches.bind(immer);
 var setAutoFreeze = /* @__PURE__ */ immer.setAutoFreeze.bind(immer);
 var setUseStrictShallowCopy = /* @__PURE__ */ immer.setUseStrictShallowCopy.bind(immer);
+var setUseStrictIteration = /* @__PURE__ */ immer.setUseStrictIteration.bind(immer);
 var applyPatches = /* @__PURE__ */ immer.applyPatches.bind(immer);
 var createDraft = /* @__PURE__ */ immer.createDraft.bind(immer);
 var finishDraft = /* @__PURE__ */ immer.finishDraft.bind(immer);
-function castDraft(value) {
-    return value;
-}
-function castImmutable(value) {
-    return value;
-}
+var castDraft = (value)=>value;
+var castImmutable = (value)=>value;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"48i3i":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -54444,7 +54858,7 @@ const languages = {
         button: "\u30DC\u30BF\u30F3"
     }
 };
-const token = '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';
+const token = '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';
 const endpoint = 'https://models.github.ai/inference';
 
 },{"firebase/auth":"4ZBbi","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"9XP3q":[function(require,module,exports,__globalThis) {
@@ -55183,7 +55597,7 @@ var _constants = require("../../utils/constants");
 var _openai = require("openai");
 var _openaiDefault = parcelHelpers.interopDefault(_openai);
 var _gptslice = require("../../utils/gptslice");
-var _netflixlist = require("./netflixlist");
+var _netflixlist = require("./Netflixlist");
 var _netflixlistDefault = parcelHelpers.interopDefault(_netflixlist);
 var _s = $RefreshSig$();
 const Gpt = ()=>{
@@ -55192,6 +55606,7 @@ const Gpt = ()=>{
     const movielist = (0, _reactRedux.useSelector)((store)=>store.gpt.movielist);
     const posterlist = (0, _reactRedux.useSelector)((store)=>store.gpt.poster);
     const inputRef = (0, _react.useRef)(null);
+    const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w400';
     const dispatch = (0, _reactRedux.useDispatch)();
     const [click, setclick] = (0, _react.useState)(false);
     const modelName = 'openai/gpt-4o-mini';
@@ -55210,7 +55625,7 @@ const Gpt = ()=>{
                 messages: [
                     {
                         role: 'user',
-                        content: `give me a movie recommendation for ${text} in a comma separated , just 35 unique movie names, no other text. dont return the content in string`
+                        content: `give me a movie recommendation for ${text} in a comma separated , just 10 unique movie names, no other text. dont return the content in string`
                     }
                 ],
                 temperature: 1.0,
@@ -55222,7 +55637,7 @@ const Gpt = ()=>{
             else console.warn('No content returned from OpenAI.');
         } catch (error) {
             window.alert('token expired please either change the Ai model');
-            alert('Something went wrong while getting movie recommendations.');
+            window.alert(error);
         }
     }
     (0, _react.useEffect)(()=>{
@@ -55234,7 +55649,7 @@ const Gpt = ()=>{
                 const response = await fetch('https://api.themoviedb.org/3/search/movie?query=' + movie + '&include_adult=false&language=tamil&page=1', (0, _constants.options));
                 const movieData = await response.json();
                 if (!movieData) return null;
-                poster.push(movieData.results);
+                poster.push(movieData.results[0]);
             }
             dispatch((0, _gptslice.addposter)(poster));
         }
@@ -55243,110 +55658,115 @@ const Gpt = ()=>{
         movielist
     ]);
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-            className: "overflow-x-hidden h-screen w-screen absolute scrollbar-hide   ",
-            style: {
-                backgroundImage: `url('https://assets.nflxext.com/ffe/siteui/vlv3/fbf440b2-24a0-49f5-b2ba-a5cbe8ea8736/web/IN-en-20250324-TRIFECTA-perspective_d7c906ec-0531-47de-8ece-470d5061c88a_large.jpg')`,
-                backgroundSize: '100% 100%'
-            },
-            children: [
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                    className: "w-screen h-full bg-black opacity-65  ",
-                    children: " "
-                }, void 0, false, {
-                    fileName: "src/components/browse/gpt.js",
-                    lineNumber: 94,
-                    columnNumber: 9
-                }, undefined),
-                posterlist[0]?.map((item, index)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                        className: "w-screen h-full bg-black opacity-65"
-                    }, index, false, {
+        className: "relative overflow-x-hidden h-screen w-screen",
+        children: [
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                className: "absolute inset-0",
+                style: {
+                    backgroundImage: `url('https://assets.nflxext.com/ffe/siteui/vlv3/fbf440b2-24a0-49f5-b2ba-a5cbe8ea8736/web/IN-en-20250324-TRIFECTA-perspective_d7c906ec-0531-47de-8ece-470d5061c88a_large.jpg')`,
+                    backgroundSize: '100% 100%'
+                }
+            }, void 0, false, {
+                fileName: "src/components/browse/gpt.js",
+                lineNumber: 89,
+                columnNumber: 7
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                className: "absolute inset-0 bg-black opacity-65"
+            }, void 0, false, {
+                fileName: "src/components/browse/gpt.js",
+                lineNumber: 98,
+                columnNumber: 7
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                className: "relative z-10",
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                        className: "flex justify-center mt-48 gap-4",
+                        children: [
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                                ref: inputRef,
+                                type: "text",
+                                className: "h-10 opacity-80 rounded-xl px-5 w-[600px]",
+                                placeholder: search
+                            }, void 0, false, {
+                                fileName: "src/components/browse/gpt.js",
+                                lineNumber: 104,
+                                columnNumber: 11
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                                onClick: results,
+                                className: "px-4 py-2 bg-red-600 text-white font-bold rounded-md hover:cursor-pointer",
+                                children: btn
+                            }, void 0, false, {
+                                fileName: "src/components/browse/gpt.js",
+                                lineNumber: 110,
+                                columnNumber: 11
+                            }, undefined)
+                        ]
+                    }, void 0, true, {
                         fileName: "src/components/browse/gpt.js",
-                        lineNumber: 97,
-                        columnNumber: 11
-                    }, undefined)),
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                    children: [
-                        ' ',
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                            className: "absolute right-0 left-0 mx-auto top-0 my-48 flex",
-                            style: {
-                                width: '600px'
-                            },
-                            children: [
-                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
-                                    ref: inputRef,
-                                    type: "text",
-                                    className: "h-10 opacity-80 rounded-xl p-5",
-                                    style: {
-                                        width: '600px'
-                                    },
-                                    placeholder: search
-                                }, void 0, false, {
-                                    fileName: "src/components/browse/gpt.js",
-                                    lineNumber: 109,
-                                    columnNumber: 13
-                                }, undefined),
-                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                                    onClick: results,
-                                    className: "p-2 w-max bg-red-600 text-white text-l font-bold rounded-md mr-10 hover:cursor-pointer ml-4 h-max",
-                                    children: btn
-                                }, void 0, false, {
-                                    fileName: "src/components/browse/gpt.js",
-                                    lineNumber: 116,
-                                    columnNumber: 13
-                                }, undefined),
-                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                                    className: "absolute top-20 text-white text-xl font-bold ",
-                                    style: {
-                                        width: '1150px',
-                                        left: '-300px'
-                                    },
-                                    children: posterlist[0] != null && posterlist[0].filter(Boolean).map((movie, index)=>{
-                                        return movie.length < 5 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _netflixlistDefault.default), {
-                                            subdata: movie,
-                                            title: movie[0]?.title,
-                                            length: movie.length
-                                        }, index, false, {
+                        lineNumber: 103,
+                        columnNumber: 9
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                        className: "mt-20 px-10",
+                        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                            className: "flex space-x-4 overflow-x-scroll scrollbar-hide",
+                            children: posterlist[0] && posterlist[0].map((movie)=>movie.poster_path && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                                    className: "min-w-[150px] cursor-pointer hover:scale-110 transition-transform duration-300",
+                                    children: [
+                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("img", {
+                                            src: `${IMAGE_BASE_URL}${movie.poster_path}`,
+                                            alt: movie.title,
+                                            className: "rounded-lg shadow-lg"
+                                        }, void 0, false, {
                                             fileName: "src/components/browse/gpt.js",
-                                            lineNumber: 131,
+                                            lineNumber: 129,
                                             columnNumber: 23
-                                        }, undefined);
-                                    })
-                                }, void 0, false, {
+                                        }, undefined),
+                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                                            className: "text-sm text-white mt-2 truncate",
+                                            children: movie.title
+                                        }, void 0, false, {
+                                            fileName: "src/components/browse/gpt.js",
+                                            lineNumber: 134,
+                                            columnNumber: 23
+                                        }, undefined)
+                                    ]
+                                }, movie.id, true, {
                                     fileName: "src/components/browse/gpt.js",
-                                    lineNumber: 123,
-                                    columnNumber: 13
-                                }, undefined),
-                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                                    className: "absolute my-44 text-3xl font-bold text-white left-52",
-                                    children: posterlist[0] == null && click && 'loading'
-                                }, void 0, false, {
-                                    fileName: "src/components/browse/gpt.js",
-                                    lineNumber: 141,
-                                    columnNumber: 13
-                                }, undefined)
-                            ]
-                        }, void 0, true, {
+                                    lineNumber: 125,
+                                    columnNumber: 21
+                                }, undefined))
+                        }, void 0, false, {
                             fileName: "src/components/browse/gpt.js",
-                            lineNumber: 105,
+                            lineNumber: 120,
                             columnNumber: 11
                         }, undefined)
-                    ]
-                }, void 0, true, {
-                    fileName: "src/components/browse/gpt.js",
-                    lineNumber: 103,
-                    columnNumber: 9
-                }, undefined)
-            ]
-        }, void 0, true, {
-            fileName: "src/components/browse/gpt.js",
-            lineNumber: 87,
-            columnNumber: 7
-        }, undefined)
-    }, void 0, false, {
+                    }, void 0, false, {
+                        fileName: "src/components/browse/gpt.js",
+                        lineNumber: 119,
+                        columnNumber: 9
+                    }, undefined),
+                    posterlist.length === 0 && click && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                        className: "text-center text-3xl font-bold text-white mt-28",
+                        children: "Loading..."
+                    }, void 0, false, {
+                        fileName: "src/components/browse/gpt.js",
+                        lineNumber: 145,
+                        columnNumber: 11
+                    }, undefined)
+                ]
+            }, void 0, true, {
+                fileName: "src/components/browse/gpt.js",
+                lineNumber: 101,
+                columnNumber: 7
+            }, undefined)
+        ]
+    }, void 0, true, {
         fileName: "src/components/browse/gpt.js",
-        lineNumber: 86,
+        lineNumber: 87,
         columnNumber: 5
     }, undefined);
 };
@@ -55367,7 +55787,7 @@ $RefreshReg$(_c, "Gpt");
   globalThis.$RefreshReg$ = prevRefreshReg;
   globalThis.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"dVPUn","react-redux":"hbNxT","react":"jMk1U","../../utils/constants":"dIVBf","openai":"8Kzds","../../utils/gptslice":"gh8ve","./netflixlist":"aC5wo","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"7h6Pi"}],"8Kzds":[function(require,module,exports,__globalThis) {
+},{"react/jsx-dev-runtime":"dVPUn","react-redux":"hbNxT","react":"jMk1U","../../utils/constants":"dIVBf","openai":"8Kzds","../../utils/gptslice":"gh8ve","./Netflixlist":"jjJm6","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"7h6Pi"}],"8Kzds":[function(require,module,exports,__globalThis) {
 "use strict";
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 exports = module.exports = function(...args) {
@@ -65358,12 +65778,12 @@ const _deployments_endpoints = new Set([
     '/images/edits'
 ]);
 
-},{"3f6f742ec456cb1b":"62BaH","79ceac30e52fb55b":"knjBI","45e0632c8eff66de":"72oQu","e07a85b82579fcec":"3pLmM","ce8a989ea0b609ab":"3kMpI"}],"aC5wo":[function(require,module,exports,__globalThis) {
-var $parcel$ReactRefreshHelpers$2c57 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-$parcel$ReactRefreshHelpers$2c57.init();
+},{"3f6f742ec456cb1b":"62BaH","79ceac30e52fb55b":"knjBI","45e0632c8eff66de":"72oQu","e07a85b82579fcec":"3pLmM","ce8a989ea0b609ab":"3kMpI"}],"jjJm6":[function(require,module,exports,__globalThis) {
+var $parcel$ReactRefreshHelpers$4d44 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+$parcel$ReactRefreshHelpers$4d44.init();
 var prevRefreshReg = globalThis.$RefreshReg$;
 var prevRefreshSig = globalThis.$RefreshSig$;
-$parcel$ReactRefreshHelpers$2c57.prelude(module);
+$parcel$ReactRefreshHelpers$4d44.prelude(module);
 
 try {
 // src/components/Netflixlist.js
@@ -65372,60 +65792,40 @@ parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
-const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
-const Netflixlist = ({ subdata, title, length })=>{
-    if (!subdata || subdata.length === 0) return null;
+const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w200';
+const Netflixlist = ({ data })=>{
+    if (!data || data.length === 0) return null;
+    console.log(data);
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         className: "my-6",
-        children: [
-            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
-                className: "text-2xl font-bold text-white mb-4",
-                children: title
-            }, void 0, false, {
-                fileName: "src/components/browse/netflixlist.js",
-                lineNumber: 13,
-                columnNumber: 7
-            }, undefined),
-            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                className: "flex space-x-4 overflow-x-scroll scrollbar-hide",
-                children: subdata.map((movie, index)=>{
-                    // Avoid empty or broken posters
-                    if (!movie.poster_path) return null;
-                    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                        className: "min-w-[200px] cursor-pointer hover:scale-110 transition-transform duration-300",
-                        children: [
-                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("img", {
-                                src: `${IMAGE_BASE_URL}${movie.poster_path}`,
-                                alt: movie.title,
-                                className: "rounded-lg shadow-lg"
-                            }, void 0, false, {
-                                fileName: "src/components/browse/netflixlist.js",
-                                lineNumber: 26,
-                                columnNumber: 15
-                            }, undefined),
-                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                                className: "text-sm text-white mt-2 truncate",
-                                children: movie.title
-                            }, void 0, false, {
-                                fileName: "src/components/browse/netflixlist.js",
-                                lineNumber: 31,
-                                columnNumber: 15
-                            }, undefined)
-                        ]
-                    }, movie.id || index, true, {
-                        fileName: "src/components/browse/netflixlist.js",
-                        lineNumber: 22,
-                        columnNumber: 13
-                    }, undefined);
-                })
-            }, void 0, false, {
-                fileName: "src/components/browse/netflixlist.js",
-                lineNumber: 16,
-                columnNumber: 7
-            }, undefined)
-        ]
-    }, void 0, true, {
-        fileName: "src/components/browse/netflixlist.js",
+        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+            className: "min-w-[100px] cursor-pointer hover:scale-110 transition-transform duration-300",
+            children: [
+                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("img", {
+                    src: `${IMAGE_BASE_URL}${data.poster_path}`,
+                    alt: data.title,
+                    className: "rounded-lg shadow-lg mr-8"
+                }, void 0, false, {
+                    fileName: "src/components/browse/Netflixlist.js",
+                    lineNumber: 13,
+                    columnNumber: 9
+                }, undefined),
+                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                    className: "text-sm text-white mt-2 truncate",
+                    children: data.title
+                }, void 0, false, {
+                    fileName: "src/components/browse/Netflixlist.js",
+                    lineNumber: 18,
+                    columnNumber: 9
+                }, undefined)
+            ]
+        }, void 0, true, {
+            fileName: "src/components/browse/Netflixlist.js",
+            lineNumber: 12,
+            columnNumber: 7
+        }, undefined)
+    }, void 0, false, {
+        fileName: "src/components/browse/Netflixlist.js",
         lineNumber: 11,
         columnNumber: 5
     }, undefined);
@@ -65435,7 +65835,7 @@ exports.default = Netflixlist;
 var _c;
 $RefreshReg$(_c, "Netflixlist");
 
-  $parcel$ReactRefreshHelpers$2c57.postlude(module);
+  $parcel$ReactRefreshHelpers$4d44.postlude(module);
 } finally {
   globalThis.$RefreshReg$ = prevRefreshReg;
   globalThis.$RefreshSig$ = prevRefreshSig;

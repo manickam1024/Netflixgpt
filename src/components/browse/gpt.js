@@ -6,12 +6,13 @@ import { addmovie, addposter } from '../../utils/gptslice'
 import { endpoint, token } from '../../utils/constants'
 import { options } from '../../utils/constants'
 import { clearposter } from '../../utils/gptslice'
-import Netflixlist from './netflixlist'
+import Netflixlist from './Netflixlist'
 export const Gpt = () => {
   const lang = useSelector((store) => store.gpt.lang)
   const movielist = useSelector((store) => store.gpt.movielist)
   const posterlist = useSelector((store) => store.gpt.poster)
   const inputRef = useRef(null)
+  const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w400'
   const dispatch = useDispatch()
   const [click, setclick] = useState(false)
 
@@ -35,14 +36,13 @@ export const Gpt = () => {
         messages: [
           {
             role: 'user',
-            content: `give me a movie recommendation for ${text} in a comma separated , just 35 unique movie names, no other text. dont return the content in string`,
+            content: `give me a movie recommendation for ${text} in a comma separated , just 10 unique movie names, no other text. dont return the content in string`,
           },
         ],
         temperature: 1.0,
         top_p: 1.0,
         model: modelName,
       })
-
       const dataFromStringToArray =
         response?.choices?.[0]?.message.content.split(',')
 
@@ -53,7 +53,7 @@ export const Gpt = () => {
       }
     } catch (error) {
       window.alert('token expired please either change the Ai model')
-      alert('Something went wrong while getting movie recommendations.')
+      window.alert(error)
     }
   }
 
@@ -74,8 +74,9 @@ export const Gpt = () => {
         )
         const movieData = await response.json()
         if (!movieData) return null
-        poster.push(movieData.results)
+        poster.push(movieData.results[0])
       }
+
       dispatch(addposter(poster))
     }
 
@@ -83,66 +84,68 @@ export const Gpt = () => {
   }, [movielist])
 
   return (
-    <div>
+    <div className="relative overflow-x-hidden h-screen w-screen">
+      {/* Background */}
       <div
-        className="overflow-x-hidden h-screen w-screen absolute scrollbar-hide   "
+        className="absolute inset-0"
         style={{
           backgroundImage: `url('https://assets.nflxext.com/ffe/siteui/vlv3/fbf440b2-24a0-49f5-b2ba-a5cbe8ea8736/web/IN-en-20250324-TRIFECTA-perspective_d7c906ec-0531-47de-8ece-470d5061c88a_large.jpg')`,
           backgroundSize: '100% 100%',
         }}
-      >
-        <div className="w-screen h-full bg-black opacity-65  "> </div>
-        {}
-        {posterlist[0]?.map((item, index) => (
-          <div
-            className="w-screen h-full bg-black opacity-65"
-            key={index}
-          ></div>
-        ))}
+      />
 
-        <div>
-          {' '}
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black opacity-65" />
+
+      {/* Content */}
+      <div className="relative z-10">
+        {/* Search Bar */}
+        <div className="flex justify-center mt-48 gap-4">
+          <input
+            ref={inputRef}
+            type="text"
+            className="h-10 opacity-80 rounded-xl px-5 w-[600px]"
+            placeholder={search}
+          />
           <div
-            className="absolute right-0 left-0 mx-auto top-0 my-48 flex"
-            style={{ width: '600px' }}
+            onClick={results}
+            className="px-4 py-2 bg-red-600 text-white font-bold rounded-md hover:cursor-pointer"
           >
-            <input
-              ref={inputRef}
-              type="text"
-              className="h-10 opacity-80 rounded-xl p-5"
-              style={{ width: '600px' }}
-              placeholder={search}
-            />
-            <div
-              onClick={results}
-              className="p-2 w-max bg-red-600 text-white text-l font-bold rounded-md mr-10 hover:cursor-pointer ml-4 h-max"
-            >
-              {btn}
-            </div>
-
-            <div
-              className="absolute top-20 text-white text-xl font-bold "
-              style={{ width: '1150px', left: '-300px' }}
-            >
-              {posterlist[0] != null &&
-                posterlist[0].filter(Boolean).map((movie, index) => {
-                  return (
-                    movie.length < 5 && (
-                      <Netflixlist
-                        subdata={movie}
-                        title={movie[0]?.title}
-                        key={index}
-                        length={movie.length}
-                      />
-                    )
-                  )
-                })}
-            </div>
-            <div className="absolute my-44 text-3xl font-bold text-white left-52">
-              {posterlist[0] == null && click && 'loading'}
-            </div>
+            {btn}
           </div>
         </div>
+
+        {/* Movie Posters */}
+        <div className="mt-20 px-10">
+          <div className="flex space-x-4 overflow-x-scroll scrollbar-hide">
+            {posterlist[0] &&
+              posterlist[0].map(
+                (movie) =>
+                  movie.poster_path && (
+                    <div
+                      key={movie.id}
+                      className="min-w-[150px] cursor-pointer hover:scale-110 transition-transform duration-300"
+                    >
+                      <img
+                        src={`${IMAGE_BASE_URL}${movie.poster_path}`}
+                        alt={movie.title}
+                        className="rounded-lg shadow-lg"
+                      />
+                      <p className="text-sm text-white mt-2 truncate">
+                        {movie.title}
+                      </p>
+                    </div>
+                  )
+              )}
+          </div>
+        </div>
+
+        {/* Loading */}
+        {posterlist.length === 0 && click && (
+          <div className="text-center text-3xl font-bold text-white mt-28">
+            Loading...
+          </div>
+        )}
       </div>
     </div>
   )

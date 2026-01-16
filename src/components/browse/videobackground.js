@@ -12,7 +12,7 @@ const Videobackground = ({ tkey }) => {
       <iframe
         className={`z-0 w-full h-screen scale-125 transition-opacity duration-500
         }`}
-        src={`https://www.youtube.com/embed/${tkey}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0`}
+        src={`https://www.youtube.com/embed/${tkey}?autoplay=1&mute=0&controls=0&showinfo=0&rel=0`}
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerPolicy="strict-origin-when-cross-origin"
