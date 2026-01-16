@@ -55376,34 +55376,42 @@ try {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
-var _react = require("react");
-var _s = $RefreshSig$();
 const Videobackground = ({ tkey })=>{
-    _s();
-    const [loaded, setLoaded] = (0, _react.useState)(false);
     if (!tkey) return null;
+    const unmute = ()=>{
+        const iframe = document.getElementById('yt-player');
+        iframe.src = iframe.src.replace('mute=0', 'mute=1');
+    };
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         className: "relative w-full h-screen overflow-hidden",
-        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("iframe", {
-            className: `z-0 w-full h-screen scale-125 transition-opacity duration-500
-        }`,
-            src: `https://www.youtube.com/embed/${tkey}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0`,
-            title: "YouTube video player",
-            allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
-            referrerPolicy: "strict-origin-when-cross-origin",
-            allowFullScreen: true
-        }, void 0, false, {
-            fileName: "src/components/browse/videobackground.js",
-            lineNumber: 12,
-            columnNumber: 7
-        }, undefined)
-    }, void 0, false, {
+        children: [
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("iframe", {
+                id: "yt-player",
+                className: "z-0 w-full h-screen scale-125",
+                src: `https://www.youtube.com/embed/${tkey}?autoplay=1&mute=0&controls=0&rel=0`,
+                allow: "autoplay",
+                allowFullScreen: true
+            }, void 0, false, {
+                fileName: "src/components/browse/videobackground.js",
+                lineNumber: 11,
+                columnNumber: 7
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                onClick: unmute,
+                className: "absolute bottom-20 right-10 z-10 bg-black/70 text-white px-4 py-2 rounded",
+                children: "mute \uD83D\uDD0A"
+            }, void 0, false, {
+                fileName: "src/components/browse/videobackground.js",
+                lineNumber: 19,
+                columnNumber: 7
+            }, undefined)
+        ]
+    }, void 0, true, {
         fileName: "src/components/browse/videobackground.js",
-        lineNumber: 9,
+        lineNumber: 10,
         columnNumber: 5
     }, undefined);
 };
-_s(Videobackground, "5HkI/FtSFoHY/ZszUPbNWJy51d0=");
 _c = Videobackground;
 exports.default = Videobackground;
 var _c;
@@ -55414,7 +55422,7 @@ $RefreshReg$(_c, "Videobackground");
   globalThis.$RefreshReg$ = prevRefreshReg;
   globalThis.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"dVPUn","react":"jMk1U","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"7h6Pi"}],"8uBk0":[function(require,module,exports,__globalThis) {
+},{"react/jsx-dev-runtime":"dVPUn","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"7h6Pi","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8uBk0":[function(require,module,exports,__globalThis) {
 var $parcel$ReactRefreshHelpers$454d = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 $parcel$ReactRefreshHelpers$454d.init();
 var prevRefreshReg = globalThis.$RefreshReg$;
